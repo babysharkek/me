@@ -3,36 +3,117 @@ import Layout from "../Layouts/Layout.astro";
 import Background from "../components/background.astro";
 ---
 
-<Layout title="Home - Classroom" proxy={false}>
-    <nav id="topbar">
-        <span id="user-greeting"></span>
-        <button id="devices-btn" style="display:none" aria-label="Your devices">
-            <span id="device-dots"></span>
-        </button>
+<Layout title="Bolt Proxy" proxy={false}>
+    <Background />
+    <main id="home-main">
+        <div id="home-center">
+            <h1 id="main-title">Bolt proxy</h1>
+            <p id="tagline">to all F-Students: have fun guys keep failing school ily all</p>
+
+            <div id="search-wrap">
+                <form id="search-form" method="GET" action="javascript:void(0)">
+                    <svg id="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21L15.0001 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <input type="text" name="q" id="search-input" placeholder="search anything..." autocomplete="off" />
+                </form>
+                <div id="suggestions"></div>
+            </div>
+
+            <div id="stats-row">
+                <span id="stat-online"><span id="online-count">—</span> online</span>
+                <span class="stat-dot">·</span>
+                <span id="stat-visits"><span id="visits-count">—</span> total visits</span>
+            </div>
+
+            <div id="discord-section">
+                <p id="discord-label">JOIN OUR DISCORD FOR MORE LINKS</p>
+                <a id="discord-link" href="https://discord.gg/bolt" target="_blank" rel="noopener">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.101 18.08.114 18.102.133 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                    </svg>
+                    Discord
+                </a>
+            </div>
+        </div>
+
+        <!-- Devices Panel (popup) -->
         <div id="devices-panel" style="display:none">
             <p class="devices-panel-title">Devices on your key</p>
             <ul id="devices-list"></ul>
         </div>
-        <a href="/games" id="games-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5.99989 11H9.99989M7.99989 9V13M14.9999 12H15.0099M17.9999 10H18.0099M10.4488 5H13.5509C16.1758 5 17.4883 5 18.5184 5.49743C19.4254 5.9354 20.179 6.63709 20.6805 7.51059C21.2501 8.5027 21.3436 9.81181 21.5306 12.43L21.7766 15.8745C21.8973 17.5634 20.5597 19 18.8664 19C18.0005 19 17.1794 18.6154 16.6251 17.9502L16.2499 17.5C15.9068 17.0882 15.7351 16.8823 15.5398 16.7159C15.1302 16.3672 14.6344 16.1349 14.1043 16.0436C13.8514 16 13.5834 16 13.0473 16H10.9525C10.4164 16 10.1484 16 9.89553 16.0436C9.36539 16.1349 8.86957 16.3672 8.46 16.7159C8.26463 16.8823 8.09305 17.0882 7.74989 17.5L7.37473 17.9502C6.8204 18.6154 5.99924 19 5.13335 19C3.44013 19 2.1025 17.5634 2.22314 15.8745L2.46918 12.43C2.65619 9.81181 2.7497 8.5027 3.31926 7.51059C3.82074 6.63709 4.57433 5.9354 5.48135 5.49743C6.51151 5 7.82396 5 10.4488 5Z"/>
-            </svg>
-            Games
-        </a>
-    </nav>
+
+        <!-- Bottom Nav -->
+        <nav id="bottom-nav">
+            <a href="/" class="nav-btn active" title="Home">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9 21 9 15 12 15C15 15 15 21 15 21M9 21H15"/>
+                </svg>
+            </a>
+            <a href="/games" class="nav-btn" title="Games">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5.99989 11H9.99989M7.99989 9V13M14.9999 12H15.0099M17.9999 10H18.0099M10.4488 5H13.5509C16.1758 5 17.4883 5 18.5184 5.49743C19.4254 5.9354 20.179 6.63709 20.6805 7.51059C21.2501 8.5027 21.3436 9.81181 21.5306 12.43L21.7766 15.8745C21.8973 17.5634 20.5597 19 18.8664 19C18.0005 19 17.1794 18.6154 16.6251 17.9502L16.2499 17.5C15.9068 17.0882 15.7351 16.8823 15.5398 16.7159C15.1302 16.3672 14.6344 16.1349 14.1043 16.0436C13.8514 16 13.5834 16 13.0473 16H10.9525C10.4164 16 10.1484 16 9.89553 16.0436C9.36539 16.1349 8.86957 16.3672 8.46 16.7159C8.26463 16.8823 8.09305 17.0882 7.74989 17.5L7.37473 17.9502C6.8204 18.6154 5.99924 19 5.13335 19C3.44013 19 2.1025 17.5634 2.22314 15.8745L2.46918 12.43C2.65619 9.81181 2.7497 8.5027 3.31926 7.51059C3.82074 6.63709 4.57433 5.9354 5.48135 5.49743C6.51151 5 7.82396 5 10.4488 5Z"/>
+                </svg>
+            </a>
+            <a href="/browser" class="nav-btn" title="Browser">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+            </a>
+            <a href="/appstore" class="nav-btn" title="Apps">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+            </a>
+            <a href="/ai" class="nav-btn" title="AI Chat">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </a>
+            <a href="/settings" class="nav-btn" title="Settings">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+                    <circle cx="4" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="20" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="2" fill="currentColor" stroke="none"/>
+                </svg>
+            </a>
+            <button id="devices-btn" class="nav-btn" title="Your devices" style="display:none">
+                <span id="device-dots"></span>
+            </button>
+            <a href="https://discord.gg/bolt" target="_blank" rel="noopener" class="nav-btn" title="Discord">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.101 18.08.114 18.102.133 18.115a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+                </svg>
+            </a>
+        </nav>
+    </main>
+
     <script is:inline>
         (function() {
-            function getCookie(name) {
-                var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-                return match ? decodeURIComponent(match[1]) : null;
-            }
-            var name = getCookie('bolt_user');
-            if (name) {
-                var el = document.getElementById('user-greeting');
-                if (el) el.textContent = 'Hey, ' + name;
+            // Animate visit counter
+            function animateCount(el, target, suffix) {
+                var start = 0;
+                var duration = 1200;
+                var startTime = null;
+                function step(ts) {
+                    if (!startTime) startTime = ts;
+                    var progress = Math.min((ts - startTime) / duration, 1);
+                    var val = Math.floor(progress * target);
+                    el.textContent = val.toLocaleString() + (suffix || '');
+                    if (progress < 1) requestAnimationFrame(step);
+                    else el.textContent = target.toLocaleString() + (suffix || '');
+                }
+                requestAnimationFrame(step);
             }
 
-            // Fetch device info and render dots
+            // Show static/simulated stats
+            var onlineEl = document.getElementById('online-count');
+            var visitsEl = document.getElementById('visits-count');
+            if (onlineEl) animateCount(onlineEl, Math.floor(Math.random() * 200) + 150, '');
+            if (visitsEl) animateCount(visitsEl, 1264332, '');
+
+            // Device info
             fetch('/api/me').then(function(r) { return r.json(); }).then(function(data) {
                 var btn = document.getElementById('devices-btn');
                 var dotsEl = document.getElementById('device-dots');
@@ -40,7 +121,6 @@ import Background from "../components/background.astro";
                 var panel = document.getElementById('devices-panel');
                 if (!btn || !dotsEl || !list || !panel) return;
 
-                // Build dots
                 var dots = '';
                 for (var i = 1; i <= data.maxDevices; i++) {
                     if (i === data.currentDevice) {
@@ -54,20 +134,18 @@ import Background from "../components/background.astro";
                 dotsEl.innerHTML = dots;
                 btn.style.display = 'flex';
 
-                // Build panel list
                 var items = '';
                 for (var j = 1; j <= data.maxDevices; j++) {
                     if (j === data.currentDevice) {
                         items += '<li class="device-item device-you"><span class="device-dot dot-you"></span>Device ' + j + '<span class="device-tag">you</span></li>';
                     } else if (j <= data.totalDevices) {
-                        items += '<li class="device-item device-taken"><span class="device-dot dot-active"></span>Device ' + j + '</li>';
+                        items += '<li class="device-item device-taken"><span class="device-dot dot-active"></span>Device ' + j + '<span class="device-tag device-tag-taken">connected</span></li>';
                     } else {
                         items += '<li class="device-item device-open"><span class="device-dot dot-empty"></span>Open slot</li>';
                     }
                 }
                 list.innerHTML = items;
 
-                // Toggle panel
                 var open = false;
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -81,325 +159,82 @@ import Background from "../components/background.astro";
             }).catch(function() {});
         })();
     </script>
-    <main>
-        <Background />
-        <div id="content">
-            <div id="top">
-                <h1 id="main-title">Bolt Proxy</h1>
-                <h2 id="tagline">Your private browser</h2>
-            </div>
-
-            <div id="search-wrap">
-                <div id="searchbar">
-                    <form id="search-form" method="GET" action="javascript:void(0)">
-                        <button type="submit">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21 21L15.0001 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <input type="text" name="q" id="search-input" placeholder="Search or enter a URL" autocomplete="off" />
-                    </form>
-                    <div id="suggestions"></div>
-                </div>
-
-                <div id="quick-links">
-                    <button class="quick-link" data-url="https://youtube.com">
-                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color:#ff0000">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                        <span>YouTube</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://tiktok.com">
-                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
-                        </svg>
-                        <span>TikTok</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://gemini.google.com">
-                        <img src="/icons/gemini.svg" alt="Gemini" class="ql-img" />
-                        <span>Gemini</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://flixbaba.mov">
-                        <img src="/icons/flixbaba.ico" alt="FlixBaba" class="ql-img" />
-                        <span>FlixBaba</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://justanime.to">
-                        <img src="https://www.google.com/s2/favicons?domain=justanime.to&sz=64" alt="JustAnime" class="ql-img" />
-                        <span>JustAnime</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://cinekada.com">
-                        <img src="/icons/cinekada.ico" alt="CineKada" class="ql-img" />
-                        <span>CineKada</span>
-                    </button>
-
-                    <button class="quick-link" data-url="https://footballia.eu">
-                        <img src="https://www.google.com/s2/favicons?domain=footballia.eu&sz=64" alt="Footballia" class="ql-img" />
-                        <span>Footballia</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
     <script src="../scripts/index.ts"></script>
     <script src="../scripts/global.ts"></script>
 </Layout>
 
 <style>
-    #topbar {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        z-index: 100;
-        background: rgba(255,255,255,0.07);
-        backdrop-filter: blur(12px);
-        border-radius: 100px;
-        padding: 6px 10px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    #user-greeting {
-        font-size: 0.82rem;
-        font-family: medium;
-        color: rgba(255,255,255,0.5);
-        padding: 6px 10px 6px 14px;
-        white-space: nowrap;
-    }
-
-    #user-greeting:empty {
-        display: none;
-    }
-
-    #devices-btn {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 10px;
-        border-radius: 100px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        transition: background 0.2s ease;
-        position: relative;
-    }
-
-    #devices-btn:hover {
-        background: rgba(255,255,255,0.08);
-    }
-
-    #device-dots {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        display: inline-block;
-        flex-shrink: 0;
-    }
-
-    .dot-you {
-        background: #fff;
-    }
-
-    .dot-active {
-        background: rgba(255,255,255,0.4);
-    }
-
-    .dot-empty {
-        background: transparent;
-        border: 1.5px solid rgba(255,255,255,0.2);
-    }
-
-    #devices-panel {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        background: rgba(20,20,28,0.92);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 14px;
-        padding: 12px 14px;
-        min-width: 190px;
-        z-index: 200;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
-
-    .devices-panel-title {
-        font-size: 0.7rem;
-        color: rgba(255,255,255,0.35);
-        font-family: medium;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        margin: 0 0 10px 0;
-    }
-
-    #devices-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    #home-main {
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 6px;
-    }
-
-    .device-item {
-        display: flex;
         align-items: center;
-        gap: 9px;
-        font-size: 0.85rem;
-        font-family: medium;
-        padding: 4px 2px;
-    }
-
-    .device-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-
-    .device-you { color: #fff; }
-    .device-taken { color: rgba(255,255,255,0.5); }
-    .device-open { color: rgba(255,255,255,0.25); font-style: italic; }
-
-    .device-tag {
-        margin-left: auto;
-        font-size: 0.68rem;
-        background: rgba(255,255,255,0.12);
-        color: rgba(255,255,255,0.6);
-        padding: 2px 7px;
-        border-radius: 100px;
-        font-family: medium;
-    }
-
-    #games-btn {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        padding: 6px 14px;
-        border-radius: 100px;
-        background: transparent;
-        border: none;
-        color: rgba(255,255,255,0.7);
-        font-size: 0.88rem;
-        font-family: medium;
-        cursor: pointer;
-        text-decoration: none;
-        transition: color 0.2s ease, background 0.2s ease;
-    }
-
-    #games-btn:hover {
-        color: #fff;
-        background: rgba(255,255,255,0.1);
-    }
-
-    #content {
-        height: 100vh;
-        width: 100vw;
-        display: flex;
         justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        overflow: hidden;
-        gap: 2rem;
-        padding: 20px;
+        position: relative;
+        padding-bottom: 100px;
     }
 
-    #top {
+    #home-center {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0;
+        width: 100%;
+        max-width: 680px;
+        padding: 0 20px;
     }
 
     #main-title {
-        font-size: 4.5rem;
-        color: #fff;
+        font-size: clamp(3.5rem, 10vw, 6.5rem);
         font-family: bold;
+        color: #fff;
+        margin: 0 0 0.5rem 0;
         line-height: 1;
-        margin: 0;
+        letter-spacing: -0.02em;
+        text-align: center;
     }
 
     #tagline {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         color: rgba(255,255,255,0.45);
         font-family: medium;
-        margin: 0;
-        font-weight: 400;
-        letter-spacing: 0.04em;
+        margin: 0 0 2.2rem 0;
+        text-align: center;
+        letter-spacing: 0.01em;
     }
 
     #search-wrap {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        width: min(600px, 90vw);
-    }
-
-    #searchbar {
+        width: 100%;
+        background: rgba(255,255,255,0.07);
+        border-radius: 50px;
+        padding: 14px 20px;
+        margin-bottom: 1.4rem;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        background-color: rgba(255,255,255,0.08);
-        backdrop-filter: blur(10px);
-        width: 100%;
-        border-radius: 14px;
-        padding: 14px 18px;
-        border: none;
-        outline: none;
     }
 
-    #searchbar:focus-within {
-        background-color: rgba(255,255,255,0.11);
-    }
-
-    #searchbar form {
-        width: 100%;
+    #search-form {
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    #searchbar button[type="submit"] {
-        border: none;
-        outline: none;
-        background: transparent;
-        cursor: pointer;
-        color: rgba(255,255,255,0.5);
-        transition: color 0.2s ease;
+    #search-icon {
+        color: rgba(255,255,255,0.4);
         flex-shrink: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    #searchbar button[type="submit"]:hover {
-        color: #fff;
     }
 
     #search-input {
-        width: 100%;
+        flex: 1;
+        background: transparent;
         border: none;
         outline: none;
-        background: transparent;
-        font-size: 1.15rem;
-        font-family: medium;
         color: #fff;
+        font-size: 1rem;
+        font-family: medium;
     }
 
     #search-input::placeholder {
-        color: rgba(255,255,255,0.35);
+        color: rgba(255,255,255,0.3);
     }
 
     #suggestions {
@@ -459,56 +294,201 @@ import Background from "../components/background.astro";
         flex-shrink: 0;
     }
 
-    #quick-links {
+    #stats-row {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        align-items: center;
         gap: 10px;
-        width: 100%;
+        font-size: 0.88rem;
+        color: rgba(255,255,255,0.4);
+        font-family: medium;
+        margin-bottom: 1.4rem;
     }
 
-    .quick-link {
+    #stats-row #online-count {
+        color: #fff;
+        font-family: bold;
+    }
+
+    #stats-row #visits-count {
+        color: #fff;
+        font-family: bold;
+    }
+
+    .stat-dot {
+        opacity: 0.3;
+    }
+
+    #discord-section {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        flex: 1;
-        min-width: 88px;
-        max-width: 112px;
-        height: 76px;
-        border-radius: 14px;
-        padding: 10px 6px;
-        border: 1px solid rgba(255,255,255,0.08);
-        background: rgba(255,255,255,0.06);
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        gap: 6px;
+        gap: 8px;
     }
 
-    .quick-link:hover {
-        background: rgba(255,255,255,0.12);
-        border-color: rgba(255,255,255,0.18);
-        transform: translateY(-3px);
-    }
-
-    .quick-link svg {
-        width: 28px;
-        height: 28px;
-        flex-shrink: 0;
-    }
-
-    .ql-img {
-        width: 28px;
-        height: 28px;
-        object-fit: contain;
-        flex-shrink: 0;
-        border-radius: 5px;
-    }
-
-    .quick-link span {
-        font-size: 0.75rem;
+    #discord-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        color: rgba(255,255,255,0.3);
         font-family: medium;
-        color: rgba(255,255,255,0.8);
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    #discord-link {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: rgba(255,255,255,0.6);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-family: medium;
+        padding: 6px 14px;
+        border-radius: 100px;
+        transition: color 0.2s, background 0.2s;
+    }
+
+    #discord-link:hover {
+        color: #fff;
+        background: rgba(255,255,255,0.08);
+    }
+
+    /* Devices panel */
+    #devices-panel {
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(18,18,24,0.96);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        padding: 16px 18px;
+        min-width: 220px;
+        z-index: 300;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    .devices-panel-title {
+        font-size: 0.68rem;
+        color: rgba(255,255,255,0.35);
+        font-family: medium;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        margin: 0 0 12px 0;
+    }
+
+    #devices-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .device-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.87rem;
+        font-family: medium;
+        padding: 4px 2px;
+    }
+
+    .device-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .device-you { color: #fff; }
+    .device-taken { color: rgba(255,255,255,0.55); }
+    .device-open { color: rgba(255,255,255,0.25); font-style: italic; }
+
+    .device-tag {
+        margin-left: auto;
+        font-size: 0.68rem;
+        background: rgba(255,255,255,0.12);
+        color: rgba(255,255,255,0.6);
+        padding: 2px 8px;
+        border-radius: 100px;
+        font-family: medium;
+    }
+
+    .device-tag-taken {
+        background: rgba(255,165,0,0.15);
+        color: rgba(255,165,0,0.8);
+    }
+
+    /* Bottom Nav */
+    #bottom-nav {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        background: rgba(22,22,28,0.88);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 50px;
+        padding: 8px 12px;
+        z-index: 200;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        color: rgba(255,255,255,0.4);
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s ease, background 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .nav-btn:hover {
+        color: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.08);
+    }
+
+    .nav-btn.active {
+        color: #fff;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+    .dot-you {
+        background: #fff;
+    }
+
+    .dot-active {
+        background: rgba(255,165,0,0.85);
+    }
+
+    .dot-empty {
+        background: transparent;
+        border: 1.5px solid rgba(255,255,255,0.2);
+    }
+
+    #device-dots {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 </style>

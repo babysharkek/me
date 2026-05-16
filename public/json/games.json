@@ -54,5 +54,26 @@
     "url": "https://superliquid-soccer.com/gg/super-liquid-soccer/",
     "categories": ["Sports"],
     "featured": false
+  },
+  {
+    "name": "Checkout Frenzy",
+    "image": "/checkout-frenzy.webp",
+    "url": "https://superliquid-soccer.com/gg/checkout-frenzy/",
+    "categories": ["Casual"],
+    "featured": true
+  },
+  {
+    "name": "Speed Stars",
+    "image": "/speed-stars.jpg",
+    "url": "https://superliquid-soccer.com/gg/speed-stars/",
+    "categories": ["Sports"],
+    "featured": true
+  },
+  {
+    "name": "Dreadhead Parkour",
+    "image": "/dreadhead-parkour.jpg",
+    "url": "https://superliquid-soccer.com/gg/dreadhead-parkour/",
+    "categories": ["Action"],
+    "featured": true
   }
 ]
