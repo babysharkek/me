@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+export interface Props {
+    title: string;
+    proxy?: boolean;
+    noAuth?: boolean;
+}
+const { title, proxy = false, noAuth = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" style="scroll-behavior: smooth; overflow-x: hidden;">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/favicon.png" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Home - Classroom</title>
+        {
+            proxy && (
+                <>
+                    <script is:inline src="/baremux/index.js" />
+                    <script is:inline src="/learn/scramjet.all.js" />
+                    <script src="../scripts/proxy.ts" />
+                </>
+            )
+        }
+    </head>
+
+    <body>
+        <slot />
+        {!noAuth && (
+            <script is:inline>
+                (function() {
+                    function getCookie(name) {
+                        var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)'));
+                        return match ? decodeURIComponent(match[1]) : null;
+                    }
+                    if (!getCookie('bolt_user')) {
+                        window.location.replace('/login');
+                    }
+                })();
+            </script>
+        )}
+    </body>
+</html>

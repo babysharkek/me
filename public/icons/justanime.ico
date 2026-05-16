@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script>(function(s){s.dataset.zone='10903469',s.src='https://llvpn.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <script defer src="https://umami.justanime.site/script.js" data-website-id="8945e590-7f9b-4d99-85e2-1d75f1e125b9"></script>
+
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Mobile & PWA Meta Tags -->
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="msapplication-navbutton-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="JustAnime" />
+  <meta name="application-name" content="JustAnime" />
+
+  <!-- SEO Meta Tags will be injected dynamically -->
+  <title>JustAnime · Watch Free Anime Online</title>
+  <meta name="description" content="Watch anime online for free in HD quality with English subtitles or dubbed." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
+
+  <!-- Preconnect to external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+
+  <!-- Preload Critical Resources -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script type="module" crossorigin src="/assets/index-B63joRwk.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DvzR4vFa.css">
+</head>
+
+<body>
+
+  <div id="root"></div>
+</body>
+
+</html>

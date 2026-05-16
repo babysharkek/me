@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <link rel="shortcut icon" id="tab-favicon" href="/assets/media/favicon/classroom.png" />
+    <title>Games - Classroom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <script src="/assets/transport/bare.js"></script>
+    <script src="/assets/mathematics/bundle.js?v=2025-05-02a"></script>
+    <script src="/assets/mathematics/config.js?v=2025-05-02a"></script>
+
+    <script>
+      async function registerSW() {
+        if ('serviceWorker' in navigator) {
+          try {
+            await navigator.serviceWorker.register('/sw.js?v=2025-05-02a', { scope: '/a/' });
+            const wispUrl = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/wisp/';
+            try {
+              const conn = new BareMux.BareMuxConnection('/assets/transport/bare-worker.js');
+              const cur = await conn.getTransport().catch(() => null);
+              if (!cur || cur === 'null') await conn.setTransport('/assets/transport/epoxy.js', [{ wisp: wispUrl }]);
+            } catch (_) {}
+          } catch (err) { console.error("SW Registration failed:", err); }
+        }
+      }
+      registerSW();
+    </script>
+
+    <style>
+      :root {
+        --tile-size: 210px;
+        --tile-grow: 1.06;
+        --nav-height: 64px;
+        --pad: 56px;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-color: #0a0a0a;
+        color: #fff;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* ── Dynamic background ── */
+      #dynamic-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.45) saturate(1.3);
+        opacity: 0;
+        transition: opacity 0.55s ease, background-image 0.35s ease;
+      }
+      #dynamic-bg.active { opacity: 1; }
+      #dynamic-bg::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.08) 40%, rgba(0,0,0,0.75) 100%);
+      }
+
+      /* ── Nav ── */
+      .top-nav {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: var(--nav-height);
+        background: rgba(10,10,10,0);
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        display: flex;
+        align-items: center;
+        padding: 0 var(--pad);
+        z-index: 1000;
+        transition: background 0.3s ease, backdrop-filter 0.3s ease;
+      }
+      .top-nav.scrolled {
+        background: rgba(10,10,10,0.88);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+      .nav-links a {
+        color: rgba(255,255,255,0.82);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.82rem;
+        display: flex; align-items: center; gap: 7px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover { color: #fff; }
+
+      /* ── Page header ── */
+      .page-header {
+        padding: calc(var(--nav-height) + 40px) var(--pad) 0;
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+      }
+      .page-header h1 { margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+      #game-count { font-size: 0.82rem; opacity: 0.42; font-weight: 500; }
+
+      /* ── Search bar ── */
+      .filter-bar { padding: 16px var(--pad) 28px; }
+      #search {
+        width: 100%;
+        max-width: 360px;
+        background: rgba(255,255,255,0.09);
+        border: 1.5px solid rgba(255,255,255,0.11);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #fff;
+        font-size: 0.88rem;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      #search::placeholder { color: rgba(255,255,255,0.38); }
+      #search:focus { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.30); }
+
+      /* ── Recently played ── */
+      .section-label {
+        padding: 0 var(--pad) 14px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0.42;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-label button {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.38);
+        font-size: 0.68rem;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0;
+        transition: color 0.2s;
+      }
+      .section-label button:hover { color: rgba(255,255,255,0.75); }
+      #recent-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--tile-size), 1fr));
+        gap: 26px;
+        padding: 0 var(--pad) 32px;
+      }
+      #recent-section { display: none; }
+      #recent-section.visible { display: block; }
+
+      /* ── Games grid ── */
+      .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--tile-size), 1fr));
+        gap: 26px;
+        padding: 0 var(--pad) 110px;
+      }
+
+      .game-card {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        text-align: left;
+        transition: transform 0.22s ease;
+      }
+      .game-card:hover { transform: scale(var(--tile-grow)); }
+
+      .game-thumb {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 13px;
+        overflow: hidden;
+        box-shadow: 0 10px 32px rgba(0,0,0,0.6);
+      }
+      .game-icon {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.28s ease;
+      }
+      .game-card:hover .game-icon { transform: scale(1.05); }
+
+      .game-thumb::after {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.52) 100%);
+        border-radius: 13px;
+        pointer-events: none;
+      }
+
+      .play-icon {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0;
+        background: rgba(0,0,0,0.32);
+        border-radius: 13px;
+        transition: opacity 0.2s;
+        font-size: 2.2rem;
+        color: #fff;
+      }
+      .game-card:hover .play-icon { opacity: 1; }
+
+      .game-name {
+        margin-top: 9px;
+        font-size: 0.85rem;
+        color: #fff;
+        opacity: 0.85;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+      }
+
+      .game-card.selected .game-thumb {
+        box-shadow: 0 0 0 3px #fff, 0 0 18px 4px rgba(255,255,255,0.5), 0 10px 32px rgba(0,0,0,0.6);
+      }
+      .game-card.selected .game-name { opacity: 1; color: #fff; }
+
+      /* ── Game overlay ── */
+      #game-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        z-index: 9999;
+        background: #000;
+        flex-direction: column;
+      }
+      #game-overlay.active { display: flex; }
+
+      #game-frame { flex: 1; width: 100%; border: none; }
+
+      #game-close-btn {
+        position: absolute;
+        top: 12px; right: 14px;
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        border: 1.5px solid rgba(255,255,255,0.35);
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10002;
+        font-size: 0.9rem;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.18s, border-color 0.18s;
+      }
+      #game-close-btn:hover { background: rgba(210,45,45,0.8); border-color: transparent; }
+
+      #game-loading {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: #000; z-index: 10000;
+        transition: opacity 0.4s;
+        flex-direction: column; gap: 14px;
+      }
+      #game-loading.hidden { opacity: 0; pointer-events: none; }
+
+      .spinner {
+        width: 42px; height: 42px;
+        border: 3px solid rgba(255,255,255,0.12);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      #loading-label { font-size: 0.82rem; opacity: 0.45; letter-spacing: 0.08em; }
+
+      #no-results {
+        display: none;
+        grid-column: 1 / -1;
+        text-align: center;
+        opacity: 0.35;
+        padding: 60px 0;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 600px) {
+        :root { --pad: 18px; }
+        .top-nav { padding: 0 18px; }
+        .games-grid { gap: 14px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="dynamic-bg"></div>
+
+    <nav class="top-nav">
+      <ul class="nav-links">
+        <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="/a"><i class="fa-solid fa-gamepad"></i> Games</a></li>
+        <li><a href="/c"><i class="fa-solid fa-gear"></i> Settings</a></li>
+      </ul>
+    </nav>
+
+    <div class="page-header">
+      <h1>My Library</h1>
+      <span id="game-count"></span>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="search" placeholder="Search games..." oninput="filterGames()" />
+    </div>
+
+    <div id="recent-section">
+      <div class="section-label">
+        Recently Played
+        <button onclick="clearRecent()">Clear</button>
+      </div>
+      <div id="recent-row"></div>
+    </div>
+
+    <div class="games-grid" id="grid">
+      <div id="no-results">No games found.</div>
+    </div>
+
+    <div id="game-overlay">
+      <div id="game-loading">
+        <div class="spinner"></div>
+        <div id="loading-label">Loading game...</div>
+      </div>
+      <button id="game-close-btn" onclick="closeGame()" title="Close (Esc)">✕</button>
+      <iframe
+        id="game-frame"
+        src=""
+        allow="fullscreen; autoplay; pointer-lock"
+        referrerpolicy="no-referrer"
+        onload="hideLoading()"
+      ></iframe>
+    </div>
+
+    <script>
+      const games = [
+        { name: "Five Nights at Freddy's",  icon: "/images/fnaf.jpg",               bg: "/bg/fnafbg.webp",           url: "/fnaf1",          local: true  },
+        { name: "Five Nights at Freddy's 2", icon: "/images/fnaf2.jpg",             bg: "/bg/fnaf2bg.webp",          url: "/fnaf2",          local: true  },
+        { name: "Five Nights at Freddy's 3", icon: "/images/fnaf3.jpg",             bg: "/bg/fnaf3bg.jpg",           url: "/fnaf3",          local: true  },
+        { name: "Five Nights at Freddy's 4", icon: "/images/fnaf4.jpg",             bg: "/bg/fnaf4bg1.jpg",          url: "/fnaf4",          local: true  },
+        { name: "Geometry Dash",             icon: "https://www.google.com/s2/favicons?domain=geometrydash.com&sz=128", bg: "/bg/gdlitebg.png", url: "/gdlite", local: true },
+        { name: "Backrooms",                 icon: "/images/backroomsicon.jpg",      bg: "/bg/backroomsbg1.png",      url: "/backrooms",      local: true  },
+        { name: "Retro Bowl",                icon: "/images/retrobowlicon.jpg",      bg: "/bg/retrobowlbg.png",       url: "/retrobowl",      local: true  },
+        { name: "Basket Random",             icon: "/images/basket.jpg",             bg: "https://i.ytimg.com/vi/bN5l3T-7_GE/maxresdefault.jpg", url: "/basketrandom", local: true },
+        { name: "Plants vs. Zombies",          icon: "/images/pvzicon.jpg",            bg: "/bg/pvzbg1.jpg",            url: "https://v0-admin-dashboard-for-games.vercel.app/plants-vs-zombies",    local: false },
+        { name: "Drift Hunters",             icon: "/images/drifthuntersicon.jpg",   bg: "/bg/drifthuntersbg.jpg",    url: "https://v0-admin-dashboard-for-games.vercel.app/drift-hunters",       local: false },
+        { name: "1v1.LOL",                   icon: "/images/1v1lolicon.jpg",         bg: "/bg/1v1lolbg.png",          url: "https://v0-admin-dashboard-for-games.vercel.app/1v1-lol-online",      local: false },
+        { name: "Getaway Shootout",          icon: "/images/getawayshootouticon.jpg",bg: "/bg/getawayshootoutbg.png", url: "https://v0-admin-dashboard-for-games.vercel.app/getaway-shootout",    local: false },
+        { name: "Football Legends",          icon: "/images/footballlegendsicon.jpg",bg: "/bg/footballlegendsbg.png", url: "https://v0-admin-dashboard-for-games.vercel.app/football-legends",    local: false },
+        { name: "Poppy Strike 5",            icon: "/images/poppystrike5icon.jpg",   bg: "/bg/poppystrike5bg.png",    url: "https://v0-admin-dashboard-for-games.vercel.app/poppy-strike-5",      local: false },
+        { name: "Rivals",                    icon: "/images/rivals.jpg",             bg: "/bg/rivalsbg.png",          url: "https://veck.io",                                                     local: false },
+        { name: "Slope",                     icon: "/images/slope.jpg",              bg: "/bg/slopebg.png",           url: "https://storage.y8.com/y8-studio/unity_webgl/Gani/slope-game_2025_v3/?key=9757549&value=80527", local: false },
+        { name: "Rocket League",             icon: "/images/rocket.jpg",             bg: "/bg/rocketleaguebg.png",    url: "https://rocketgoal.io",                                               local: false },
+        { name: "Subway Surfers",            icon: "/images/subway.jpg",             bg: "/bg/subwaysurfersbg.png",   url: "https://basketball-games.xyz/subway-surfers",                         local: false },
+      ];
+
+      // ── Recently played ───────────────────────────────────────────────────
+      const RECENT_KEY = "recentlyPlayed";
+      const RECENT_MAX = 4;
+
+      function getRecent() {
+        try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+        catch { return []; }
+      }
+
+      function addRecent(name) {
+        let r = getRecent().filter(n => n !== name);
+        r.unshift(name);
+        if (r.length > RECENT_MAX) r = r.slice(0, RECENT_MAX);
+        localStorage.setItem(RECENT_KEY, JSON.stringify(r));
+        renderRecent();
+      }
+
+      function clearRecent() {
+        localStorage.removeItem(RECENT_KEY);
+        renderRecent();
+      }
+
+      function makeCard(game, i) {
+        return `
+          <button class="game-card" data-name="${game.name.toLowerCase()}" data-index="${i}">
+            <div class="game-thumb">
+              <img class="game-icon" src="${game.icon}" alt="${game.name}" loading="lazy">
+              <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+            </div>
+            <div class="game-name">${game.name}</div>
+          </button>`;
+      }
+
+      function bindCard(card) {
+        const game = games[card.dataset.index];
+        card.addEventListener("click",      () => { selectCard(card); launchGame(game); });
+        card.addEventListener("mouseenter", () => updateBG(game.bg));
+        card.addEventListener("mouseleave", resetBG);
+      }
+
+      function renderRecent() {
+        const names   = getRecent();
+        const section = document.getElementById("recent-section");
+        const row     = document.getElementById("recent-row");
+        if (!names.length) { section.classList.remove("visible"); return; }
+        const matched = names.map(n => {
+          const i = games.findIndex(g => g.name === n);
+          return i >= 0 ? { game: games[i], i } : null;
+        }).filter(Boolean);
+        if (!matched.length) { section.classList.remove("visible"); return; }
+        row.innerHTML = matched.map(({ game, i }) => makeCard(game, i)).join("");
+        row.querySelectorAll(".game-card").forEach(bindCard);
+        section.classList.add("visible");
+      }
+
+      // ── Grid ──────────────────────────────────────────────────────────────
+      function loadGames() {
+        const grid     = document.getElementById("grid");
+        const noResult = document.getElementById("no-results");
+        document.getElementById("game-count").textContent = games.length + " games";
+
+        grid.innerHTML = games.map((game, i) => makeCard(game, i)).join("") + noResult.outerHTML;
+
+        document.getElementById("no-results").style.display = "none";
+
+        document.querySelectorAll("#grid .game-card").forEach(bindCard);
+
+        renderRecent();
+      }
+
+      function selectCard(el) {
+        document.querySelectorAll(".game-card.selected").forEach(c => c.classList.remove("selected"));
+        el.classList.add("selected");
+      }
+
+      function filterGames() {
+        const q = document.getElementById("search").value.toLowerCase().trim();
+        let visible = 0;
+        document.querySelectorAll(".game-card").forEach(card => {
+          const show = !q || card.dataset.name.includes(q);
+          card.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+        const nr = document.getElementById("no-results");
+        if (nr) nr.style.display = visible === 0 ? "block" : "none";
+      }
+
+      // ── Background ────────────────────────────────────────────────────────
+      function updateBG(bgUrl) {
+        const bg = document.getElementById("dynamic-bg");
+        bg.style.backgroundImage = `url('${bgUrl}')`;
+        bg.classList.add("active");
+      }
+
+      function resetBG() {
+        document.getElementById("dynamic-bg").classList.remove("active");
+      }
+
+      // ── Game launch ───────────────────────────────────────────────────────
+      async function launchGame(game) {
+        const { url, local, name } = game;
+        const frame   = document.getElementById("game-frame");
+        const overlay = document.getElementById("game-overlay");
+        const loading = document.getElementById("game-loading");
+
+        loading.classList.remove("hidden");
+        document.getElementById("loading-label").textContent = "Loading " + name + "...";
+        frame.src = "";
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+        addRecent(name);
+
+        if (local) {
+          frame.src = url;
+          return;
+        }
+
+        try { await navigator.serviceWorker.ready; } catch (e) {}
+
+        if (typeof __uv$config === "undefined") {
+          alert("Proxy not ready. Please refresh the page.");
+          return;
+        }
+
+        try {
+          frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        } catch (e) { console.error("URL encode error:", e); }
+      }
+
+      function hideLoading() {
+        const l = document.getElementById("game-loading");
+        if (l) l.classList.add("hidden");
+      }
+
+      function closeGame() {
+        document.getElementById("game-overlay").classList.remove("active");
+        document.getElementById("game-frame").src = "";
+        document.getElementById("game-loading").classList.remove("hidden");
+        document.body.style.overflow = "auto";
+      }
+
+      // ── Nav scroll ────────────────────────────────────────────────────────
+      const topNav = document.querySelector(".top-nav");
+      window.addEventListener("scroll", () => {
+        topNav.classList.toggle("scrolled", window.scrollY > 10);
+      }, { passive: true });
+
+      // ── Keyboard ──────────────────────────────────────────────────────────
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeGame(); });
+
+      window.addEventListener("load", loadGames);
+    </script>
+  </body>
+</html>

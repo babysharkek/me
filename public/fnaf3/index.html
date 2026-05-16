@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="https://cdn.jsdelivr.net/gh/genizy/fnaf@latest/3/">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>Five Nights at Freddy's 3</title>
+    <style>
+        body { background-color: #050705; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Courier New', Courier, monospace; color: #4af626; }
+        #progress-container { position: absolute; width: 350px; text-align: center; text-shadow: 0 0 5px #2d8618; }
+        #status-label { font-size: 14px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; animation: scanline 4s linear infinite; }
+        .crt-frame { width: 100%; height: 6px; background: #1a1c1a; border: 1px solid #2d8618; padding: 2px; position: relative; box-shadow: inset 0 0 10px #000; }
+        #unified-bar { height: 100%; background: #4af626; width: 0%; transition: width 0.5s ease-out; box-shadow: 0 0 15px #4af626; }
+        @keyframes scanline {
+            0% { opacity: 1; } 5% { opacity: 0.7; } 10% { opacity: 1; } 15% { opacity: 0.8; }
+            80% { opacity: 1; } 85% { opacity: 0.4; } 90% { opacity: 1; }
+        }
+        #download-text, #extract-text, #download-bar, #extract-bar { display: none; }
+    </style>
+</head>
+<body>
+    <div style="display: inline-block; -webkit-user-select: none; text-align: left">
+        <canvas id="MMFCanvas" width="1280" height="720"> Your browser does not support Canvas. </canvas>
+    </div>
+    <div id="progress-container">
+        <div id="status-label">Rebooting Systems...</div>
+        <div class="crt-frame"><div id="unified-bar"></div></div>
+        <span id="download-text"></span>
+        <span id="extract-text"></span>
+        <div id="download-bar"></div>
+        <div id="extract-bar"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const unifiedBar = document.getElementById('unified-bar');
+        const statusLabel = document.getElementById('status-label');
+        const observer = new MutationObserver(() => {
+            const dl = parseInt(document.getElementById('download-text').innerText) || 0;
+            const ex = parseInt(document.getElementById('extract-text').innerText) || 0;
+            const totalProgress = (dl * 0.5) + (ex * 0.5);
+            unifiedBar.style.width = totalProgress + '%';
+            if (dl >= 100 && ex < 100) statusLabel.innerText = "Restoring Audio Devices...";
+            if(totalProgress >= 100) {
+                statusLabel.innerText = "Systems Online";
+                setTimeout(() => {
+                    document.getElementById('progress-container').style.filter = 'blur(10px)';
+                    document.getElementById('progress-container').style.opacity = '0';
+                    setTimeout(() => { document.getElementById('progress-container').style.display = 'none'; }, 500);
+                }, 800);
+            }
+        });
+        observer.observe(document.getElementById('download-text'), { childList: true });
+        observer.observe(document.getElementById('extract-text'), { childList: true });
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

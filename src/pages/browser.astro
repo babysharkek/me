@@ -1,0 +1,42 @@
+---
+import Layout from "../Layouts/Layout.astro";
+---
+
+<Layout title="Browser" proxy={true}>
+    <div id="browser">
+        <div id="web-section"></div>
+        <script src="../scripts/browser.ts"></script>
+    </div>
+</Layout>
+
+<style>
+    #browser {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        padding: 0 !important;
+    }
+
+    #web-section {
+        width: 100%;
+        height: 100% !important;
+        position: relative;
+        padding: 0 !important;
+    }
+
+    #web-section :global(iframe) {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 0 !important;
+        display: none;
+    }
+
+    #web-section :global(iframe.active) {
+        display: block;
+    }
+</style>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="https://cdn.jsdelivr.net/gh/genizy/fnaf@latest/1/">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>Five Nights at Freddy's 1</title>
+    <style>
+        body { background-color: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: Courier, monospace; color: #eee; }
+        #progress-container { position: absolute; width: 300px; text-align: center; }
+        #loading-label { text-transform: uppercase; letter-spacing: 4px; font-size: 14px; margin-bottom: 10px; animation: flicker 2s infinite; }
+        .bar-bg { width: 100%; background: #111; border: 1px solid #333; height: 4px; position: relative; }
+        #unified-bar { height: 100%; background: #b11d1d; width: 0%; transition: width 0.3s ease; box-shadow: 0 0 8px #b11d1d; }
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.4; }
+        }
+        #download-text, #extract-text, #download-bar, #extract-bar { display: none; }
+    </style>
+</head>
+<body>
+    <div style="display: inline-block; -webkit-user-select: none; text-align: left">
+        <canvas id="MMFCanvas" width="1280" height="720"> Your browser does not support Canvas. </canvas>
+    </div>
+    <div id="progress-container">
+        <div id="loading-label">Loading System...</div>
+        <div class="bar-bg"><div id="unified-bar"></div></div>
+        <span id="download-text"></span>
+        <span id="extract-text"></span>
+        <div id="download-bar"></div>
+        <div id="extract-bar"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const unifiedBar = document.getElementById('unified-bar');
+        const observer = new MutationObserver(() => {
+            const dl = parseInt(document.getElementById('download-text').innerText) || 0;
+            const ex = parseInt(document.getElementById('extract-text').innerText) || 0;
+            const totalProgress = (dl * 0.5) + (ex * 0.5);
+            unifiedBar.style.width = totalProgress + '%';
+            if(totalProgress >= 100) {
+                setTimeout(() => { document.getElementById('progress-container').style.display = 'none'; }, 500);
+            }
+        });
+        observer.observe(document.getElementById('download-text'), { childList: true });
+        observer.observe(document.getElementById('extract-text'), { childList: true });
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

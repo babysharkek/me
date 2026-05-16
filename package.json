@@ -1,0 +1,44 @@
+{
+  "name": "agreeable-aperture",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev --port 3000",
+    "build": "node scripts/patch-libcurl.mjs && astro build",
+    "preview": "astro preview",
+    "start": "node app.js",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@fastify/static": "^6.12.0",
+    "@mercuryworkshop/bare-mux": "^2.1.9",
+    "@mercuryworkshop/libcurl-transport": "^1.5.2",
+    "@mercuryworkshop/wisp-js": "^0.3.3",
+    "@tailwindcss/vite": "^4.1.12",
+    "astro": "^5.13.5",
+    "daisyui": "^5.5.14",
+    "fastify": "^4.29.1",
+    "fuse.js": "^7.3.0",
+    "sirv": "^3.0.2",
+    "tailwindcss": "^4.1.12",
+    "three": "^0.182.0",
+    "typescript": "^5.9.3"
+  },
+  "description": "git clone <repository-url>\r    cd Bolt-Dev\r    ```",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bolt-Network/Bolt-Dev.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bolt-Network/Bolt-Dev/issues"
+  },
+  "homepage": "https://github.com/Bolt-Network/Bolt-Dev#readme",
+  "devDependencies": {
+    "@types/three": "^0.182.0"
+  }
+}

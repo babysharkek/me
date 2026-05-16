@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Five Nights at Freddy's",
+    "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/319510/header.jpg",
+    "url": "/fnaf1",
+    "categories": ["Horror"],
+    "featured": true
+  },
+  {
+    "name": "Five Nights at Freddy's 2",
+    "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/332800/header.jpg",
+    "url": "/fnaf2",
+    "categories": ["Horror"],
+    "featured": true
+  },
+  {
+    "name": "Five Nights at Freddy's 3",
+    "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/354140/header.jpg",
+    "url": "/fnaf3",
+    "categories": ["Horror"],
+    "featured": true
+  },
+  {
+    "name": "Five Nights at Freddy's 4",
+    "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/388090/header.jpg",
+    "url": "/fnaf4",
+    "categories": ["Horror"],
+    "featured": true
+  },
+  {
+    "name": "Veck.io",
+    "image": "/img/games/veck.jpg",
+    "url": "https://veck.io",
+    "categories": ["Action", "Multiplayer"],
+    "featured": false
+  },
+  {
+    "name": "2v2.io",
+    "image": "/img/games/2v2.webp",
+    "url": "https://2v2.io",
+    "categories": ["Action", "Multiplayer"],
+    "featured": false
+  },
+  {
+    "name": "Minecraft",
+    "image": "/img/games/minecraft.jpg",
+    "url": "https://eaglercraft.dev",
+    "categories": ["Adventure", "Multiplayer"],
+    "featured": false
+  },
+  {
+    "name": "Super Liquid Soccer",
+    "image": "/img/games/soccer.jpg",
+    "url": "https://superliquid-soccer.com/gg/super-liquid-soccer/",
+    "categories": ["Sports"],
+    "featured": false
+  }
+]
