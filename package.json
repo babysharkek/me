@@ -2,6 +2,7 @@
   "name": "agreeable-aperture",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@10.10.0",
   "scripts": {
     "dev": "astro dev --port 3000",
     "build": "node scripts/patch-libcurl.mjs && astro build",
