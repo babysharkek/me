@@ -122,6 +122,12 @@ fastify.get("/", (request, reply) => {
 
 const AUTH_FILE = join(__dirname, "data", "auth.json");
 
+// Helper: normalize devices array to objects {token, ua}
+function normalizeDevices(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw.map(d => typeof d === "string" ? { token: d, ua: "" } : d);
+}
+
 fastify.get("/api/me", async (request, reply) => {
     const cookieHeader = request.headers.cookie || "";
     const tokenMatch = cookieHeader.match(/(?:^|; )bolt_token=([^;]*)/);
@@ -133,14 +139,27 @@ fastify.get("/api/me", async (request, reply) => {
     try { auth = JSON.parse(readFileSync(AUTH_FILE, "utf8")); }
     catch { return reply.code(500).send({ error: "Failed to read auth" }); }
 
-    const entry = auth.find(e => Array.isArray(e.devices) && e.devices.includes(token));
+    const entry = auth.find(e => {
+        const devs = normalizeDevices(e.devices);
+        return devs.some(d => d.token === token);
+    });
     if (!entry) return reply.code(401).send({ error: "Token not recognized" });
+
+    const devs = normalizeDevices(entry.devices);
+    const currentIndex = devs.findIndex(d => d.token === token);
+
+    const devices = devs.map((d, i) => ({
+        index: i + 1,
+        ua: d.ua || "",
+        isCurrent: i === currentIndex,
+    }));
 
     return reply.send({
         name: entry.name,
-        currentDevice: entry.devices.indexOf(token) + 1,
-        totalDevices: entry.devices.length,
-        maxDevices: 3
+        currentDevice: currentIndex + 1,
+        totalDevices: devs.length,
+        maxDevices: 3,
+        devices,
     });
 });
 
@@ -179,7 +198,11 @@ fastify.post("/api/login", async (request, reply) => {
     }
 
     const token = crypto.randomUUID();
-    entry.devices.push(token);
+    const ua = request.headers["user-agent"] || "";
+
+    // Normalize existing devices to objects before pushing
+    entry.devices = normalizeDevices(entry.devices);
+    entry.devices.push({ token, ua });
 
     try {
         writeFileSync(AUTH_FILE, JSON.stringify(auth, null, 2));
@@ -194,6 +217,63 @@ fastify.post("/api/login", async (request, reply) => {
         `bolt_token=${token}; Path=/; Max-Age=${maxAge}; SameSite=Lax`,
     ]);
     return reply.send({ name: entry.name, device: deviceNum });
+});
+
+fastify.post("/api/logout", async (request, reply) => {
+    const cookieHeader = request.headers.cookie || "";
+    const tokenMatch = cookieHeader.match(/(?:^|; )bolt_token=([^;]*)/);
+    if (!tokenMatch) return reply.code(401).send({ error: "Not authenticated" });
+    const token = decodeURIComponent(tokenMatch[1]);
+
+    if (!existsSync(AUTH_FILE)) return reply.code(500).send({ error: "Auth data missing" });
+    let auth;
+    try { auth = JSON.parse(readFileSync(AUTH_FILE, "utf8")); }
+    catch { return reply.code(500).send({ error: "Failed to read auth" }); }
+
+    const entry = auth.find(e => normalizeDevices(e.devices).some(d => d.token === token));
+    if (!entry) return reply.code(401).send({ error: "Token not recognized" });
+
+    entry.devices = normalizeDevices(entry.devices).filter(d => d.token !== token);
+    try { writeFileSync(AUTH_FILE, JSON.stringify(auth, null, 2)); }
+    catch { return reply.code(500).send({ error: "Failed to save" }); }
+
+    const exp = "Thu, 01 Jan 1970 00:00:00 UTC";
+    reply.raw.setHeader("set-cookie", [
+        `bolt_token=; Path=/; Expires=${exp}; SameSite=Lax`,
+        `bolt_user=; Path=/; Expires=${exp}; SameSite=Lax`,
+    ]);
+    return reply.send({ ok: true });
+});
+
+fastify.post("/api/kick-device", async (request, reply) => {
+    const cookieHeader = request.headers.cookie || "";
+    const tokenMatch = cookieHeader.match(/(?:^|; )bolt_token=([^;]*)/);
+    if (!tokenMatch) return reply.code(401).send({ error: "Not authenticated" });
+    const token = decodeURIComponent(tokenMatch[1]);
+    const { deviceIndex } = request.body || {};
+    if (typeof deviceIndex !== "number") return reply.code(400).send({ error: "deviceIndex required" });
+
+    if (!existsSync(AUTH_FILE)) return reply.code(500).send({ error: "Auth data missing" });
+    let auth;
+    try { auth = JSON.parse(readFileSync(AUTH_FILE, "utf8")); }
+    catch { return reply.code(500).send({ error: "Failed to read auth" }); }
+
+    const entry = auth.find(e => normalizeDevices(e.devices).some(d => d.token === token));
+    if (!entry) return reply.code(401).send({ error: "Token not recognized" });
+
+    const devs = normalizeDevices(entry.devices);
+    const myIndex = devs.findIndex(d => d.token === token);
+    const targetIndex = deviceIndex - 1; // convert to 0-based
+
+    if (targetIndex < 0 || targetIndex >= devs.length) return reply.code(400).send({ error: "Invalid device index" });
+    if (targetIndex === myIndex) return reply.code(400).send({ error: "Cannot kick yourself; use /api/logout" });
+
+    devs.splice(targetIndex, 1);
+    entry.devices = devs;
+    try { writeFileSync(AUTH_FILE, JSON.stringify(auth, null, 2)); }
+    catch { return reply.code(500).send({ error: "Failed to save" }); }
+
+    return reply.send({ ok: true });
 });
 
 fastify.post("/api/chat", async (request, reply) => {

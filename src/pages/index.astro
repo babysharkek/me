@@ -59,66 +59,164 @@ import Background from "../components/background.astro";
         <div id="devices-panel" style="display:none">
             <p class="devices-panel-title">Devices on your key</p>
             <ul id="devices-list"></ul>
+            <div id="devices-footer">
+                <button id="logout-btn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Log out this device
+                </button>
+            </div>
         </div>
 
         <!-- Bottom Nav -->
         <nav id="bottom-nav">
-            <a href="/" class="nav-btn active">Home</a>
-            <a href="/games" class="nav-btn">Games</a>
+            <a href="/" class="nav-btn active">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9 21 9 15 12 15C15 15 15 21 15 21M9 21H15"/>
+                </svg>
+                Home
+            </a>
+            <a href="/games" class="nav-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4m-2-2v4"/><circle cx="16" cy="10" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/><circle cx="16" cy="14" r="1" fill="currentColor"/><circle cx="14" cy="12" r="1" fill="currentColor"/>
+                </svg>
+                Games
+            </a>
             <button id="devices-btn" class="nav-btn" style="display:none">
                 <span id="device-dots"></span>
                 <span id="devices-label">Devices</span>
             </button>
-            <a href="/settings" class="nav-btn">Settings</a>
         </nav>
+
+        <!-- Panic key hint -->
+        <p id="panic-hint">Press <kbd>\</kbd> to panic</p>
     </main>
 
     <script is:inline>
         (function() {
-            // Device info
-            fetch('/api/me').then(function(r) { return r.json(); }).then(function(data) {
-                var btn = document.getElementById('devices-btn');
-                var dotsEl = document.getElementById('device-dots');
-                var list = document.getElementById('devices-list');
-                var panel = document.getElementById('devices-panel');
-                if (!btn || !dotsEl || !list || !panel) return;
-
-                var dots = '';
-                for (var i = 1; i <= data.maxDevices; i++) {
-                    if (i === data.currentDevice) {
-                        dots += '<span class="dot dot-you" title="Device ' + i + ' (you)"></span>';
-                    } else if (i <= data.totalDevices) {
-                        dots += '<span class="dot dot-active" title="Device ' + i + '"></span>';
-                    } else {
-                        dots += '<span class="dot dot-empty" title="Open slot"></span>';
-                    }
+            // Parse a user-agent string into a friendly device name
+            function deviceName(ua) {
+                if (!ua) return 'Unknown Device';
+                if (/iPhone/.test(ua)) return 'iPhone';
+                if (/iPad/.test(ua)) return 'iPad';
+                if (/CrOS/.test(ua)) return 'Chromebook';
+                if (/Android/.test(ua)) {
+                    var m = ua.match(/Android [^;]+; ([^)]+)\)/);
+                    return m ? m[1].trim() : 'Android Device';
                 }
-                dotsEl.innerHTML = dots;
-                btn.style.display = 'flex';
+                if (/Windows NT 10/.test(ua)) return 'Windows 10/11 PC';
+                if (/Windows NT 6/.test(ua)) return 'Windows PC';
+                if (/Macintosh/.test(ua)) return 'Mac';
+                if (/Linux/.test(ua)) return 'Linux PC';
+                return 'Unknown Device';
+            }
 
-                var items = '';
-                for (var j = 1; j <= data.maxDevices; j++) {
-                    if (j === data.currentDevice) {
-                        items += '<li class="device-item device-you"><span class="device-dot dot-you"></span>Device ' + j + '<span class="device-tag">you</span></li>';
-                    } else if (j <= data.totalDevices) {
-                        items += '<li class="device-item device-taken"><span class="device-dot dot-active"></span>Device ' + j + '<span class="device-tag device-tag-taken">connected</span></li>';
-                    } else {
-                        items += '<li class="device-item device-open"><span class="device-dot dot-empty"></span>Open slot</li>';
+            // Device icon SVG per type
+            function deviceIcon(ua) {
+                var mobile = /iPhone|iPad|Android/.test(ua || '');
+                if (mobile) return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
+                return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+            }
+
+            function loadDevices() {
+                fetch('/api/me').then(function(r) { return r.json(); }).then(function(data) {
+                    var btn = document.getElementById('devices-btn');
+                    var dotsEl = document.getElementById('device-dots');
+                    var list = document.getElementById('devices-list');
+                    var panel = document.getElementById('devices-panel');
+                    var logoutBtn = document.getElementById('logout-btn');
+                    if (!btn || !dotsEl || !list || !panel) return;
+
+                    // Dots indicator
+                    var dots = '';
+                    for (var i = 1; i <= data.maxDevices; i++) {
+                        var dev = data.devices && data.devices.find(function(d) { return d.index === i; });
+                        if (dev && dev.isCurrent) {
+                            dots += '<span class="dot dot-you" title="You"></span>';
+                        } else if (dev) {
+                            dots += '<span class="dot dot-active" title="Connected"></span>';
+                        } else {
+                            dots += '<span class="dot dot-empty" title="Open slot"></span>';
+                        }
                     }
-                }
-                list.innerHTML = items;
+                    dotsEl.innerHTML = dots;
+                    btn.style.display = 'flex';
 
-                var open = false;
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    open = !open;
-                    panel.style.display = open ? 'block' : 'none';
-                });
-                document.addEventListener('click', function() {
-                    if (open) { open = false; panel.style.display = 'none'; }
-                });
-                panel.addEventListener('click', function(e) { e.stopPropagation(); });
-            }).catch(function() {});
+                    // Device list
+                    var html = '';
+                    for (var j = 1; j <= data.maxDevices; j++) {
+                        var d = data.devices && data.devices.find(function(x) { return x.index === j; });
+                        if (d && d.isCurrent) {
+                            html += '<li class="device-item device-you">'
+                                + '<span class="device-status-dot dot-you"></span>'
+                                + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
+                                + '<span class="device-name">' + deviceName(d.ua) + '</span>'
+                                + '<span class="device-tag">you</span>'
+                                + '</li>';
+                        } else if (d) {
+                            html += '<li class="device-item device-taken" data-idx="' + d.index + '">'
+                                + '<span class="device-status-dot dot-active"></span>'
+                                + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
+                                + '<span class="device-name">' + deviceName(d.ua) + '</span>'
+                                + '<button class="kick-btn" data-idx="' + d.index + '">Kick</button>'
+                                + '</li>';
+                        } else {
+                            html += '<li class="device-item device-open">'
+                                + '<span class="device-status-dot dot-empty"></span>'
+                                + '<span class="device-name open-slot">Open slot</span>'
+                                + '</li>';
+                        }
+                    }
+                    list.innerHTML = html;
+
+                    // Kick buttons
+                    list.querySelectorAll('.kick-btn').forEach(function(b) {
+                        b.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            var idx = parseInt(b.getAttribute('data-idx'));
+                            b.textContent = '...';
+                            b.disabled = true;
+                            fetch('/api/kick-device', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ deviceIndex: idx })
+                            }).then(function() { loadDevices(); }).catch(function() { b.textContent = 'Kick'; b.disabled = false; });
+                        });
+                    });
+
+                    // Logout
+                    if (logoutBtn) {
+                        logoutBtn.onclick = function() {
+                            if (!confirm('Log out this device?')) return;
+                            fetch('/api/logout', { method: 'POST' }).then(function() {
+                                window.location.href = '/login';
+                            });
+                        };
+                    }
+
+                    var open = false;
+                    btn.onclick = null;
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        open = !open;
+                        panel.style.display = open ? 'block' : 'none';
+                    });
+                    document.addEventListener('click', function() {
+                        if (open) { open = false; panel.style.display = 'none'; }
+                    });
+                    panel.addEventListener('click', function(e) { e.stopPropagation(); });
+                }).catch(function() {});
+            }
+
+            loadDevices();
+
+            // Panic key: backslash → redirect to safe page
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '\\' || e.key === 'Backslash') {
+                    window.location.href = 'https://classroom.google.com';
+                }
+            });
         })();
     </script>
     <script src="../scripts/index.ts"></script>
@@ -373,23 +471,23 @@ import Background from "../components/background.astro";
         bottom: 90px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(18,18,24,0.96);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 18px;
-        padding: 16px 18px;
-        min-width: 220px;
+        background: rgba(14,14,20,0.97);
+        backdrop-filter: blur(24px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 18px 18px 14px;
+        min-width: 260px;
         z-index: 300;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        box-shadow: 0 12px 50px rgba(0,0,0,0.6);
     }
 
     .devices-panel-title {
-        font-size: 0.68rem;
-        color: rgba(255,255,255,0.35);
+        font-size: 0.65rem;
+        color: rgba(255,255,255,0.3);
         font-family: medium;
         text-transform: uppercase;
-        letter-spacing: 0.09em;
-        margin: 0 0 12px 0;
+        letter-spacing: 0.1em;
+        margin: 0 0 14px 0;
     }
 
     #devices-list {
@@ -398,42 +496,119 @@ import Background from "../components/background.astro";
         padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
     }
 
     .device-item {
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 0.87rem;
+        gap: 9px;
+        font-size: 0.85rem;
         font-family: medium;
-        padding: 4px 2px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.03);
     }
 
-    .device-dot {
-        width: 9px;
-        height: 9px;
+    .device-you { color: #fff; background: rgba(255,255,255,0.07); }
+    .device-taken { color: rgba(255,255,255,0.7); }
+    .device-open { color: rgba(255,255,255,0.2); }
+
+    .device-status-dot {
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         flex-shrink: 0;
     }
 
-    .device-you { color: #fff; }
-    .device-taken { color: rgba(255,255,255,0.55); }
-    .device-open { color: rgba(255,255,255,0.25); font-style: italic; }
+    .device-icon {
+        display: flex;
+        align-items: center;
+        opacity: 0.6;
+        flex-shrink: 0;
+    }
+
+    .device-name {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .open-slot { font-style: italic; font-size: 0.8rem; }
 
     .device-tag {
-        margin-left: auto;
-        font-size: 0.68rem;
-        background: rgba(255,255,255,0.12);
-        color: rgba(255,255,255,0.6);
+        font-size: 0.65rem;
+        background: rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.5);
         padding: 2px 8px;
         border-radius: 100px;
         font-family: medium;
+        flex-shrink: 0;
     }
 
-    .device-tag-taken {
-        background: rgba(255,165,0,0.15);
-        color: rgba(255,165,0,0.8);
+    .kick-btn {
+        margin-left: auto;
+        flex-shrink: 0;
+        font-size: 0.68rem;
+        background: rgba(255,80,80,0.12);
+        color: rgba(255,100,100,0.9);
+        border: 1px solid rgba(255,80,80,0.2);
+        padding: 3px 10px;
+        border-radius: 100px;
+        cursor: pointer;
+        font-family: medium;
+        transition: background 0.15s;
+    }
+
+    .kick-btn:hover { background: rgba(255,80,80,0.22); }
+    .kick-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #devices-footer {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    #logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.8rem;
+        font-family: medium;
+        cursor: pointer;
+        padding: 4px 2px;
+        border-radius: 6px;
+        transition: color 0.15s;
+    }
+
+    #logout-btn:hover { color: rgba(255,100,100,0.9); }
+
+    /* Panic hint */
+    #panic-hint {
+        position: fixed;
+        bottom: 22px;
+        right: 22px;
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.18);
+        font-family: medium;
+        margin: 0;
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    #panic-hint kbd {
+        display: inline-block;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-family: monospace;
+        font-size: 0.72rem;
     }
 
     /* Bottom Nav */
