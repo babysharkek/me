@@ -3,6 +3,9 @@ import dummyProxy, { swReady } from "./encoding";
 const urlParams = new URLSearchParams(window.location.search);
 const url = urlParams.get('url');
 
+// Hide the destination URL from the address bar
+history.replaceState(null, '', '/browser');
+
 swReady.then(() => {
     const webSection = document.getElementById('web-section');
     if (!webSection) return;
