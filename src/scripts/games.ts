@@ -8,12 +8,16 @@ let favorites: Set<string> = new Set();
 let isNavigating = false;
 
 function loadFavorites() {
-    const saved = window.top?.localStorage.getItem('gameFavorites');
-    if (saved) favorites = new Set(JSON.parse(saved));
+    try {
+        const saved = localStorage.getItem('gameFavorites');
+        if (saved) favorites = new Set(JSON.parse(saved));
+    } catch (_) {}
 }
 
 function saveFavorites() {
-    window.top?.localStorage.setItem('gameFavorites', JSON.stringify([...favorites]));
+    try {
+        localStorage.setItem('gameFavorites', JSON.stringify([...favorites]));
+    } catch (_) {}
 }
 
 function toggleFavorite(gameUrl: string) {
