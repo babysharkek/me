@@ -192,11 +192,7 @@ function init(): void {
             if (saveTimeout) clearTimeout(saveTimeout);
             saveSettings(collect());
             if (el === proxyEngine) {
-                if (window.top) {
-                    window.top.location.reload();
-                } else {
-                    window.location.reload();
-                }
+                window.location.reload();
             }
         });
     });
@@ -224,12 +220,8 @@ openBlank?.addEventListener('click', () => {
         cloaked.document.body.style.width = '100%';
         cloaked.document.body.style.height = '100%';
         cloaked.document.body.style.overflow = 'hidden';
-        cloaked.document.body.innerHTML = (`
-
-    <iframe src="/" style="width: 100%; height: 100%; border: none;"></iframe>
-
-        `);
-        if (window.top) window.top.location.href = 'https://www.clever.com/';
+        cloaked.document.body.innerHTML = `<iframe src="/" style="width:100%;height:100%;border:none;"></iframe>`;
+        window.location.href = 'https://www.clever.com/';
     }
 });
 
@@ -242,7 +234,7 @@ deepClean?.addEventListener('click', () => {
 
 export async function deepReset(): Promise<void> {
     console.log("Resetting Bolt...");
-    window.top!.notify({
+    notify({
         title: "Resetting Bolt...",
         desc: "Please wait while we reset Bolt.",
         img: "/img/icons/settings.webp",
@@ -257,7 +249,7 @@ export async function deepReset(): Promise<void> {
         localStorage.clear();
         sessionStorage.clear();
 
-        window.top!.notify({
+        notify({
             title: "Successfully Reset",
             desc: "Bolt has been reset. Reloading...",
             img: "/img/icons/settings.webp",
@@ -267,7 +259,7 @@ export async function deepReset(): Promise<void> {
         });
 
         setTimeout(() => {
-            window.top!.location.href = window.top!.location.origin;
+            window.location.href = window.location.origin;
         }, 1000);
 
     } catch (e) {
