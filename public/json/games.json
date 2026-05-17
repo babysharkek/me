@@ -114,19 +114,19 @@
   {
     "name": "FNAF 4 Halloween",
     "image": "/img/games/fnaf4-halloween.webp",
-    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@master/4-halloween/",
+    "url": "/games/fnaf4-halloween.html",
     "categories": ["Horror"]
   },
   {
     "name": "FNAF Sister Location",
     "image": "/img/games/fnaf-sister-location.webp",
-    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@main/sl/",
+    "url": "/games/fnaf-sl.html",
     "categories": ["Horror"]
   },
   {
     "name": "FNF Among Us",
     "image": "/img/games/fnf-among-us.jpg",
-    "url": "https://cdn.jsdelivr.net/gh/samtheskeleton/fnf-mods-v2@main/Vs.%20Among%20Us%20Skeld%20Symphony/",
+    "url": "/games/fnf-among-us.html",
     "categories": ["Music"]
   }
 ]
