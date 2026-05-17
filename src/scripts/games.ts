@@ -1,5 +1,6 @@
 let allGames: any[] = [];
 let currentSearch = '';
+let currentTab = 'browse';
 let favorites: Set<string> = new Set();
 let isNavigating = false;
 
@@ -111,12 +112,6 @@ function renderByCategories(games: any[]) {
         container.appendChild(makeCategorySection('Favorites', favGames, false));
     }
 
-    // Featured shelf
-    const featured = games.filter(g => g.featured);
-    if (featured.length > 0) {
-        container.appendChild(makeCategorySection('Featured', featured, false));
-    }
-
     // Per-category shelves
     for (const cat of CATEGORY_ORDER) {
         const catGames = games.filter(g => g.categories.includes(cat.key));
@@ -124,9 +119,31 @@ function renderByCategories(games: any[]) {
             container.appendChild(makeCategorySection(cat.label, catGames, false));
         }
     }
+}
 
-    // All games (everything in one shelf at bottom)
+function renderAllGames(games: any[]) {
+    if (isNavigating) return;
+    const container = document.getElementById('categories-content');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const favGames = games.filter(g => favorites.has(g.url));
+    if (favGames.length > 0) {
+        container.appendChild(makeCategorySection('Favorites', favGames, true));
+    }
+
     container.appendChild(makeCategorySection('All Games', games, true));
+}
+
+function refresh() {
+    if (currentSearch) {
+        const filtered = allGames.filter(g => g.name.toLowerCase().includes(currentSearch));
+        renderSearchResults(filtered, currentSearch);
+    } else if (currentTab === 'all') {
+        renderAllGames(allGames);
+    } else {
+        renderByCategories(allGames);
+    }
 }
 
 function renderSearchResults(games: any[], query: string) {
@@ -204,20 +221,24 @@ function loadGames() {
                         : categorizeGame(game)
                 }));
 
-            renderByCategories(allGames);
+            refresh();
 
             const searchInput = document.getElementById('searchInput') as HTMLInputElement;
             if (searchInput) {
                 searchInput.addEventListener('input', () => {
                     currentSearch = searchInput.value.toLowerCase().trim();
-                    if (currentSearch) {
-                        const filtered = allGames.filter((g: any) => g.name.toLowerCase().includes(currentSearch));
-                        renderSearchResults(filtered, currentSearch);
-                    } else {
-                        renderByCategories(allGames);
-                    }
+                    refresh();
                 });
             }
+
+            document.querySelectorAll('.gtab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentTab = (btn as HTMLElement).dataset.tab || 'browse';
+                    document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    refresh();
+                });
+            });
         })
         .catch(err => console.error('Error loading games:', err));
 }

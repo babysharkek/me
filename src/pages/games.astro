@@ -23,6 +23,10 @@ import Background from "../components/background.astro";
                 <input type="text" id="searchInput" placeholder="search games..." autocomplete="off" />
             </form>
         </div>
+        <div id="gtabs">
+            <button class="gtab active" data-tab="browse">Browse</button>
+            <button class="gtab" data-tab="all">All Games</button>
+        </div>
         <div id="categories-content"></div>
         <script src="../scripts/games.ts"></script>
     </main>
