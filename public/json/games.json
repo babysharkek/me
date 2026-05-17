@@ -114,7 +114,7 @@
   {
     "name": "FNAF 4 Halloween",
     "image": "/img/games/fnaf4-halloween.webp",
-    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@latest/4-halloween/",
+    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@master/4-halloween/",
     "categories": ["Horror"]
   },
   {
