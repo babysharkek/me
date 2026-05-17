@@ -153,13 +153,14 @@ import Background from "../components/background.astro";
                                 + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
                                 + '<span class="device-name">' + deviceName(d.ua) + '</span>'
                                 + '<span class="device-tag">you</span>'
+                                + '<button class="kick-btn kick-self">Log out</button>'
                                 + '</li>';
                         } else if (d) {
-                            html += '<li class="device-item device-taken" data-idx="' + d.index + '">'
+                            html += '<li class="device-item device-taken">'
                                 + '<span class="device-status-dot dot-active"></span>'
                                 + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
                                 + '<span class="device-name">' + deviceName(d.ua) + '</span>'
-                                + '<button class="kick-btn" data-idx="' + d.index + '">Kick</button>'
+                                + '<button class="kick-btn" data-idx="' + d.index + '">Remove</button>'
                                 + '</li>';
                         } else {
                             html += '<li class="device-item device-open">'
@@ -170,8 +171,19 @@ import Background from "../components/background.astro";
                     }
                     list.innerHTML = html;
 
-                    // Kick buttons
-                    list.querySelectorAll('.kick-btn').forEach(function(b) {
+                    // Self logout buttons
+                    list.querySelectorAll('.kick-self').forEach(function(b) {
+                        b.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            if (!confirm('Log out this device?')) return;
+                            fetch('/api/logout', { method: 'POST' }).then(function() {
+                                window.location.href = '/login';
+                            });
+                        });
+                    });
+
+                    // Kick other device buttons
+                    list.querySelectorAll('.kick-btn:not(.kick-self)').forEach(function(b) {
                         b.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var idx = parseInt(b.getAttribute('data-idx'));
@@ -181,14 +193,13 @@ import Background from "../components/background.astro";
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ deviceIndex: idx })
-                            }).then(function() { loadDevices(); }).catch(function() { b.textContent = 'Kick'; b.disabled = false; });
+                            }).then(function() { loadDevices(); }).catch(function() { b.textContent = 'Remove'; b.disabled = false; });
                         });
                     });
 
-                    // Logout
+                    // Legacy footer logout (hidden but keep wired)
                     if (logoutBtn) {
                         logoutBtn.onclick = function() {
-                            if (!confirm('Log out this device?')) return;
                             fetch('/api/logout', { method: 'POST' }).then(function() {
                                 window.location.href = '/login';
                             });
@@ -511,8 +522,8 @@ import Background from "../components/background.astro";
     }
 
     .device-you { color: #fff; background: rgba(255,255,255,0.07); }
-    .device-taken { color: rgba(255,255,255,0.7); }
-    .device-open { color: rgba(255,255,255,0.2); }
+    .device-taken { color: #fff; }
+    .device-open { color: rgba(255,255,255,0.4); }
 
     .device-status-dot {
         width: 7px;
