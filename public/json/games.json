@@ -110,23 +110,5 @@
     "url": "https://d1imv5hmyw4kfp.cloudfront.net/2025/more/fort-battle-royale/index.html?school=1",
     "categories": ["Action"],
     "featured": true
-  },
-  {
-    "name": "FNAF 4 Halloween",
-    "image": "/img/games/fnaf4-halloween.webp",
-    "url": "/games/fnaf4-halloween.html",
-    "categories": ["Horror"]
-  },
-  {
-    "name": "FNAF Sister Location",
-    "image": "/img/games/fnaf-sister-location.webp",
-    "url": "/games/fnaf-sl.html",
-    "categories": ["Horror"]
-  },
-  {
-    "name": "FNF Among Us",
-    "image": "/img/games/fnf-among-us.jpg",
-    "url": "/games/fnf-among-us.html",
-    "categories": ["Music"]
   }
 ]
