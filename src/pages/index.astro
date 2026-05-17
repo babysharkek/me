@@ -79,10 +79,8 @@ import Background from "../components/background.astro";
             </a>
             <a href="/games" class="nav-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 12H8M7 11V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M15.5 12H16.5M17.5 12H18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M11 8C9.89 8 8.82 8.26 7.87 8.73C6.35 9.49 5.11 10.77 4.42 12.35C3.73 13.93 3.62 15.71 4.12 17.37C4.62 19.03 5.69 20.46 7.13 21.41C8.57 22.36 10.28 22.76 11.98 22.56L12 19.5L12.02 22.56C13.72 22.76 15.43 22.36 16.87 21.41C18.31 20.46 19.38 19.03 19.88 17.37C20.38 15.71 20.27 13.93 19.58 12.35C18.89 10.77 17.65 9.49 16.13 8.73C15.18 8.26 14.11 8 13 8H11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9 8V6.5C9 5.12 10.12 4 11.5 4H12.5C13.88 4 15 5.12 15 6.5V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 10H16M15 9V11M6.5 10.5H8M7.5 9.5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2.524 14.622C3.452 17.893 6.19 22 9.433 22C11.68 22 12.32 20.5 12 19C11.93 18.68 12.21 18 12.5 18C12.79 18 13.07 18.68 13 19C12.68 20.5 13.32 22 15.567 22C18.81 22 21.548 17.893 22.476 14.622C23.562 10.891 22.318 7 18.5 7H5.5C1.682 7 0.438 10.891 2.524 14.622Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
                 </svg>
                 Games
             </a>
@@ -121,11 +119,9 @@ import Background from "../components/background.astro";
                 return 'Unknown Device';
             }
 
-            // Device icon SVG per type
+            // Device icon SVG per type (Hugeicons smartphone style)
             function deviceIcon(ua) {
-                var mobile = /iPhone|iPad|Android/.test(ua || '');
-                if (mobile) return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
-                return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+                return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9C5 6.172 5 4.757 5.879 3.879C6.757 3 8.172 3 11 3H13C15.828 3 17.243 3 18.121 3.879C19 4.757 19 6.172 19 9V15C19 17.828 19 19.243 18.121 20.121C17.243 21 15.828 21 13 21H11C8.172 21 6.757 21 5.879 20.121C5 19.243 5 17.828 5 15V9Z"/><path d="M11 18H13"/></svg>';
             }
 
             function loadDevices() {
@@ -169,7 +165,7 @@ import Background from "../components/background.astro";
                                 + '<span class="device-status-dot dot-active"></span>'
                                 + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
                                 + '<span class="device-name">' + deviceName(d.ua) + '</span>'
-                                + '<button class="kick-btn" data-idx="' + d.index + '">Remove</button>'
+                                + '<button class="kick-btn" data-idx="' + d.index + '">Log out</button>'
                                 + '</li>';
                         } else {
                             html += '<li class="device-item device-open">'
