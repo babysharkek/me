@@ -110,5 +110,23 @@
     "url": "https://d1imv5hmyw4kfp.cloudfront.net/2025/more/fort-battle-royale/index.html?school=1",
     "categories": ["Action"],
     "featured": true
+  },
+  {
+    "name": "Archer Hero",
+    "image": "/img/games/archer-hero.png",
+    "url": "https://dnrweqffuwjtx.cloudfront.net/games/2023/unity/archer-hero/index.html",
+    "categories": ["Action"]
+  },
+  {
+    "name": "Tap Tap Shots",
+    "image": "/img/games/tap-tap-shots.jpg",
+    "url": "https://dnrweqffuwjtx.cloudfront.net/games/2023/q/1/tap-tap-shots/index.html",
+    "categories": ["Sports"]
+  },
+  {
+    "name": "Head Soccer 2022",
+    "image": "/img/games/head-soccer-2022.png",
+    "url": "https://dnrweqffuwjtx.cloudfront.net/games/2023/construct/280/head-soccer-2022/index.html",
+    "categories": ["Sports"]
   }
 ]
