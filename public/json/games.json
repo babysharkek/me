@@ -78,35 +78,35 @@
   },
   {
     "name": "Growden",
-    "image": "https://growden.io/og.jpg",
+    "image": "/img/games/growden.png",
     "url": "https://growden.io/",
     "categories": ["Casual"],
     "featured": true
   },
   {
     "name": "Polytrack",
-    "image": "https://www.google.com/s2/favicons?domain=michuscrypt.github.io&sz=256",
+    "image": "/img/games/polytrack.webp",
     "url": "https://michuscrypt.github.io/jack-games/polytrack/index.html",
     "categories": ["Racing"],
     "featured": true
   },
   {
     "name": "Super Star Car",
-    "image": "https://www.google.com/s2/favicons?domain=classroomlesson.github.io&sz=256",
+    "image": "/img/games/super-star-car.jpg",
     "url": "https://classroomlesson.github.io/basic-ruffle-player/html/super_star_car/index.html?school=1",
     "categories": ["Racing"],
     "featured": true
   },
   {
     "name": "Friday Night Funkin'",
-    "image": "https://www.google.com/s2/favicons?domain=classroomlesson.github.io&sz=256",
+    "image": "/img/games/fnf.jpg",
     "url": "https://classroomlesson.github.io/basic-ruffle-player/html/friday_night_funkin/index.html?school=1",
     "categories": ["Music"],
     "featured": true
   },
   {
     "name": "Fort Battle Royale",
-    "image": "https://www.google.com/s2/favicons?domain=d1imv5hmyw4kfp.cloudfront.net&sz=256",
+    "image": "/img/games/fort-battle-royale.jpg",
     "url": "https://d1imv5hmyw4kfp.cloudfront.net/2025/more/fort-battle-royale/index.html?school=1",
     "categories": ["Action"],
     "featured": true

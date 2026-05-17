@@ -226,6 +226,9 @@ function renderGames(games: any[]) {
     allGamesGrid.innerHTML = games.length > 0
         ? games.map(game => createGameCard(game)).join('')
         : '<p class="no-games-msg">No games found</p>';
+
+    const countBadge = document.getElementById('game-count');
+    if (countBadge) countBadge.textContent = games.length + ' games';
 }
 function createGameCard(game: any): string {
 
