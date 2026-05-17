@@ -110,5 +110,23 @@
     "url": "https://d1imv5hmyw4kfp.cloudfront.net/2025/more/fort-battle-royale/index.html?school=1",
     "categories": ["Action"],
     "featured": true
+  },
+  {
+    "name": "FNAF 4 Halloween",
+    "image": "/img/games/fnaf4-halloween.webp",
+    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@latest/4-halloween/",
+    "categories": ["Horror"]
+  },
+  {
+    "name": "FNAF Sister Location",
+    "image": "/img/games/fnaf-sister-location.webp",
+    "url": "https://cdn.jsdelivr.net/gh/genizy/fnaf@main/sl/",
+    "categories": ["Horror"]
+  },
+  {
+    "name": "FNF Among Us",
+    "image": "/img/games/fnf-among-us.jpg",
+    "url": "https://cdn.jsdelivr.net/gh/samtheskeleton/fnf-mods-v2@main/Vs.%20Among%20Us%20Skeld%20Symphony/",
+    "categories": ["Music"]
   }
 ]
