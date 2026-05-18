@@ -177,14 +177,14 @@ import Background from "../components/background.astro";
                                 + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
                                 + '<span class="device-name">' + deviceName(d.ua) + '</span>'
                                 + '<span class="device-tag">you</span>'
-                                + '<button class="kick-btn kick-self">Log out</button>'
+                                + '<button class="kick-btn kick-self" data-devname="' + deviceName(d.ua) + '">Log out</button>'
                                 + '</li>';
                         } else if (d) {
                             html += '<li class="device-item device-taken">'
                                 + '<span class="device-status-dot dot-active"></span>'
                                 + '<span class="device-icon">' + deviceIcon(d.ua) + '</span>'
                                 + '<span class="device-name">' + deviceName(d.ua) + '</span>'
-                                + '<button class="kick-btn" data-idx="' + d.index + '">Log out</button>'
+                                + '<button class="kick-btn" data-idx="' + d.index + '" data-devname="' + deviceName(d.ua) + '">Log out</button>'
                                 + '</li>';
                         } else {
                             html += '<li class="device-item device-open">'
@@ -196,13 +196,21 @@ import Background from "../components/background.astro";
                     list.innerHTML = html;
 
                     // Custom modal helpers
-                    function showSignoutModal(onConfirm) {
+                    function showSignoutModal(devName, isSelf, onConfirm) {
                         var modal = document.getElementById('signout-modal');
+                        var titleEl = document.getElementById('signout-modal-title');
+                        var descEl = document.getElementById('signout-modal-desc');
                         var confirmBtn = document.getElementById('signout-confirm');
                         var cancelBtn = document.getElementById('signout-cancel');
                         if (!modal || !confirmBtn || !cancelBtn) { onConfirm(); return; }
+                        if (titleEl) titleEl.textContent = isSelf ? 'Sign out this device?' : 'Remove ' + devName + '?';
+                        if (descEl) descEl.textContent = isSelf ? 'You\'ll need your access key to log back in.' : 'This device will be signed out and its slot freed.';
                         modal.style.display = 'flex';
-                        function cleanup() { modal.style.display = 'none'; confirmBtn.replaceWith(confirmBtn.cloneNode(true)); cancelBtn.replaceWith(cancelBtn.cloneNode(true)); }
+                        function cleanup() {
+                            modal.style.display = 'none';
+                            confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+                            cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+                        }
                         document.getElementById('signout-confirm').addEventListener('click', function() { cleanup(); onConfirm(); }, { once: true });
                         document.getElementById('signout-cancel').addEventListener('click', function() { cleanup(); }, { once: true });
                         modal.addEventListener('click', function(e) { if (e.target === modal) cleanup(); }, { once: true });
@@ -212,7 +220,8 @@ import Background from "../components/background.astro";
                     list.querySelectorAll('.kick-self').forEach(function(b) {
                         b.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            showSignoutModal(function() {
+                            var devName = b.getAttribute('data-devname') || 'this device';
+                            showSignoutModal(devName, true, function() {
                                 fetch('/api/logout', { method: 'POST' }).then(function() {
                                     window.location.href = '/login';
                                 });
@@ -225,7 +234,8 @@ import Background from "../components/background.astro";
                         b.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var idx = parseInt(b.getAttribute('data-idx'));
-                            showSignoutModal(function() {
+                            var devName = b.getAttribute('data-devname') || 'Device ' + idx;
+                            showSignoutModal(devName, false, function() {
                                 b.textContent = '...';
                                 b.disabled = true;
                                 fetch('/api/kick-device', {
@@ -611,20 +621,32 @@ import Background from "../components/background.astro";
 
     .kick-btn {
         flex-shrink: 0;
-        font-size: 0.68rem;
-        background: rgba(255,80,80,0.1);
-        color: rgba(255,100,100,0.85);
-        border: 1px solid rgba(255,80,80,0.18);
-        padding: 3px 10px;
-        border-radius: 100px;
+        margin-left: 6px;
+        font-size: 0.72rem;
+        background: rgba(255,70,70,0.08);
+        color: rgba(255,100,100,0.8);
+        border: 1px solid rgba(255,70,70,0.16);
+        padding: 5px 13px;
+        border-radius: 8px;
         cursor: pointer;
         font-family: medium;
-        transition: background 0.15s;
+        transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
         white-space: nowrap;
+        letter-spacing: 0.01em;
     }
 
-    .kick-btn:hover { background: rgba(255,80,80,0.24); }
-    .kick-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .kick-btn:hover {
+        background: rgba(255,60,60,0.22);
+        color: rgba(255,120,120,1);
+        border-color: rgba(255,70,70,0.35);
+    }
+
+    .kick-btn:active {
+        transform: scale(0.95);
+        background: rgba(255,50,50,0.3);
+    }
+
+    .kick-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     /* Sign-out modal */
     #signout-modal {

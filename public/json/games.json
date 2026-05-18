@@ -128,5 +128,40 @@
     "image": "/img/games/head-soccer-2022.png",
     "url": "https://dnrweqffuwjtx.cloudfront.net/games/2023/construct/280/head-soccer-2022/index.html",
     "categories": ["Sports"]
+  },
+  {
+    "name": "Among Us",
+    "image": "/img/games/among-us.jpg",
+    "url": "https://game.amongus-online.net/native_games/amongus/",
+    "categories": ["Multiplayer", "Action"],
+    "featured": true
+  },
+  {
+    "name": "LolShot.io",
+    "image": "/img/games/lolshot.png",
+    "url": "https://lolshot.io/",
+    "categories": ["Action", "Multiplayer"],
+    "featured": true
+  },
+  {
+    "name": "Bopz.io",
+    "image": "/img/games/bopz.jpg",
+    "url": "https://bopz.io/",
+    "categories": ["Action", "Multiplayer"],
+    "featured": true
+  },
+  {
+    "name": "Cheat or Repeat",
+    "image": "/img/games/cheat-or-repeat.png",
+    "url": "https://games.ofree.io/cheat-or-repeat/game.html",
+    "categories": ["Casual"],
+    "featured": true
+  },
+  {
+    "name": "Getaway Shootout",
+    "image": "/img/games/getaway-shootout.png",
+    "url": "https://htmlxm.github.io/h4/getaway-shootout/",
+    "categories": ["Action", "Multiplayer"],
+    "featured": true
   }
 ]
