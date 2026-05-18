@@ -51,6 +51,16 @@ import Background from "../components/background.astro";
                     <img src="https://www.google.com/s2/favicons?domain=footballia.eu&sz=64" alt="Footballia" class="ql-img" />
                     <span>Footballia</span>
                 </button>
+                <button class="quick-link" data-url="https://discord.com">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="color:#5865F2">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                    </svg>
+                    <span>Discord</span>
+                </button>
+                <button class="quick-link" data-url="https://now.gg">
+                    <img src="https://www.google.com/s2/favicons?domain=now.gg&sz=64" alt="now.gg" class="ql-img" />
+                    <span>now.gg</span>
+                </button>
             </div>
         </div>
 
@@ -58,13 +68,22 @@ import Background from "../components/background.astro";
         <div id="devices-panel" style="display:none">
             <p class="devices-panel-title">Devices on your key</p>
             <ul id="devices-list"></ul>
-            <div id="devices-footer">
-                <button id="logout-btn">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </div>
+
+        <!-- Custom Sign-out Confirm Modal -->
+        <div id="signout-modal" style="display:none">
+            <div id="signout-modal-box">
+                <div id="signout-modal-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
                     </svg>
-                    Log out this device
-                </button>
+                </div>
+                <p id="signout-modal-title">Sign out this device?</p>
+                <p id="signout-modal-desc">You'll need your access key to log back in.</p>
+                <div id="signout-modal-actions">
+                    <button id="signout-cancel">Cancel</button>
+                    <button id="signout-confirm">Sign out</button>
+                </div>
             </div>
         </div>
 
@@ -176,13 +195,27 @@ import Background from "../components/background.astro";
                     }
                     list.innerHTML = html;
 
+                    // Custom modal helpers
+                    function showSignoutModal(onConfirm) {
+                        var modal = document.getElementById('signout-modal');
+                        var confirmBtn = document.getElementById('signout-confirm');
+                        var cancelBtn = document.getElementById('signout-cancel');
+                        if (!modal || !confirmBtn || !cancelBtn) { onConfirm(); return; }
+                        modal.style.display = 'flex';
+                        function cleanup() { modal.style.display = 'none'; confirmBtn.replaceWith(confirmBtn.cloneNode(true)); cancelBtn.replaceWith(cancelBtn.cloneNode(true)); }
+                        document.getElementById('signout-confirm').addEventListener('click', function() { cleanup(); onConfirm(); }, { once: true });
+                        document.getElementById('signout-cancel').addEventListener('click', function() { cleanup(); }, { once: true });
+                        modal.addEventListener('click', function(e) { if (e.target === modal) cleanup(); }, { once: true });
+                    }
+
                     // Self logout buttons
                     list.querySelectorAll('.kick-self').forEach(function(b) {
                         b.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            if (!confirm('Log out this device?')) return;
-                            fetch('/api/logout', { method: 'POST' }).then(function() {
-                                window.location.href = '/login';
+                            showSignoutModal(function() {
+                                fetch('/api/logout', { method: 'POST' }).then(function() {
+                                    window.location.href = '/login';
+                                });
                             });
                         });
                     });
@@ -192,24 +225,17 @@ import Background from "../components/background.astro";
                         b.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var idx = parseInt(b.getAttribute('data-idx'));
-                            b.textContent = '...';
-                            b.disabled = true;
-                            fetch('/api/kick-device', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ deviceIndex: idx })
-                            }).then(function() { loadDevices(); }).catch(function() { b.textContent = 'Remove'; b.disabled = false; });
+                            showSignoutModal(function() {
+                                b.textContent = '...';
+                                b.disabled = true;
+                                fetch('/api/kick-device', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ deviceIndex: idx })
+                                }).then(function() { loadDevices(); }).catch(function() { b.textContent = 'Remove'; b.disabled = false; });
+                            });
                         });
                     });
-
-                    // Legacy footer logout (hidden but keep wired)
-                    if (logoutBtn) {
-                        logoutBtn.onclick = function() {
-                            fetch('/api/logout', { method: 'POST' }).then(function() {
-                                window.location.href = '/login';
-                            });
-                        };
-                    }
 
                     var open = false;
                     btn.onclick = null;
@@ -519,18 +545,30 @@ import Background from "../components/background.astro";
     .device-item {
         display: flex;
         align-items: center;
-        gap: 9px;
+        gap: 8px;
         font-size: 0.85rem;
         font-family: medium;
-        padding: 8px 10px;
+        padding: 9px 10px;
         border-radius: 10px;
         background: rgba(255,255,255,0.03);
-        color: #fff !important;
+        color: #fff;
+        min-width: 0;
+        cursor: default;
+        transition: background 0.15s;
     }
 
-    .device-you { background: rgba(255,255,255,0.07); }
-    .device-taken { }
-    .device-open { color: rgba(255,255,255,0.45) !important; }
+    .device-you {
+        background: rgba(255,255,255,0.07);
+    }
+
+    .device-taken:hover {
+        background: rgba(255,255,255,0.06);
+    }
+
+    .device-open {
+        color: rgba(255,255,255,0.4);
+        cursor: default;
+    }
 
     .device-status-dot {
         width: 7px;
@@ -542,69 +580,141 @@ import Background from "../components/background.astro";
     .device-icon {
         display: flex;
         align-items: center;
-        opacity: 0.6;
+        opacity: 0.55;
         flex-shrink: 0;
     }
 
     .device-name {
         flex: 1;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .open-slot { font-style: italic; font-size: 0.8rem; }
+    .open-slot {
+        font-style: italic;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.3);
+    }
 
     .device-tag {
-        font-size: 0.65rem;
+        font-size: 0.62rem;
         background: rgba(255,255,255,0.1);
-        color: rgba(255,255,255,0.5);
-        padding: 2px 8px;
+        color: rgba(255,255,255,0.45);
+        padding: 2px 7px;
         border-radius: 100px;
         font-family: medium;
         flex-shrink: 0;
+        white-space: nowrap;
     }
 
     .kick-btn {
-        margin-left: auto;
         flex-shrink: 0;
         font-size: 0.68rem;
-        background: rgba(255,80,80,0.12);
-        color: rgba(255,100,100,0.9);
-        border: 1px solid rgba(255,80,80,0.2);
+        background: rgba(255,80,80,0.1);
+        color: rgba(255,100,100,0.85);
+        border: 1px solid rgba(255,80,80,0.18);
         padding: 3px 10px;
         border-radius: 100px;
         cursor: pointer;
         font-family: medium;
         transition: background 0.15s;
+        white-space: nowrap;
     }
 
-    .kick-btn:hover { background: rgba(255,80,80,0.22); }
+    .kick-btn:hover { background: rgba(255,80,80,0.24); }
     .kick-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    #devices-footer {
-        margin-top: 12px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.07);
-    }
-
-    #logout-btn {
+    /* Sign-out modal */
+    #signout-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(6px);
         display: flex;
         align-items: center;
-        gap: 7px;
-        width: 100%;
-        background: transparent;
-        border: none;
-        color: rgba(255,255,255,0.4);
-        font-size: 0.8rem;
-        font-family: medium;
-        cursor: pointer;
-        padding: 4px 2px;
-        border-radius: 6px;
-        transition: color 0.15s;
+        justify-content: center;
+        z-index: 9999;
     }
 
-    #logout-btn:hover { color: rgba(255,100,100,0.9); }
+    #signout-modal-box {
+        background: rgba(18,18,26,0.98);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 28px 26px 22px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        text-align: center;
+    }
+
+    #signout-modal-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: rgba(255,80,80,0.12);
+        border: 1px solid rgba(255,80,80,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,100,100,0.9);
+        margin-bottom: 4px;
+    }
+
+    #signout-modal-title {
+        font-family: bold;
+        font-size: 1rem;
+        color: #fff;
+        margin: 0;
+    }
+
+    #signout-modal-desc {
+        font-family: medium;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.4);
+        margin: 0 0 10px;
+    }
+
+    #signout-modal-actions {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    #signout-cancel {
+        flex: 1;
+        padding: 9px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.7);
+        font-family: medium;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    #signout-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    #signout-confirm {
+        flex: 1;
+        padding: 9px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,80,80,0.25);
+        background: rgba(255,80,80,0.14);
+        color: rgba(255,110,110,0.95);
+        font-family: medium;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    #signout-confirm:hover { background: rgba(255,80,80,0.26); }
 
     /* Panic hint */
     #panic-hint {
