@@ -296,8 +296,14 @@ import Background from "../components/background.astro";
 
             changelogBtn.addEventListener('click', function() {
                 if (!changelogLoaded) {
-                    changelogIframe.src = 'https://www.changelogdev.com/bolt';
                     changelogLoaded = true;
+                    var proxied = '/$/https%3A%2F%2Fwww.changelogdev.com%2Fbolt';
+                    var ready = window._boltSwReady;
+                    if (ready && typeof ready.then === 'function') {
+                        ready.then(function() { changelogIframe.src = proxied; });
+                    } else {
+                        changelogIframe.src = proxied;
+                    }
                 }
                 changelogModal.style.display = 'flex';
             });
@@ -326,6 +332,10 @@ import Background from "../components/background.astro";
     </script>
     <script src="../scripts/index.ts"></script>
     <script src="../scripts/global.ts"></script>
+    <script>
+        import { swReady } from '../scripts/encoding';
+        (window as any)._boltSwReady = swReady;
+    </script>
 </Layout>
 
 <style>
