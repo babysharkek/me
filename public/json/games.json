@@ -163,5 +163,54 @@
     "url": "https://htmlxm.github.io/h4/getaway-shootout/",
     "categories": ["Action", "Multiplayer"],
     "featured": true
+  },
+  {
+    "name": "Burnout Drift: Seaport Max",
+    "image": "/img/games/burnout-drift.jpg",
+    "url": "https://23azostore.github.io/s2/burnout-drift-seaport-max/",
+    "categories": ["Racing"],
+    "featured": true
+  },
+  {
+    "name": "Drift Boss",
+    "image": "/img/games/drift-boss.jpg",
+    "url": "https://class-76.github.io/list/drift-boss/",
+    "categories": ["Racing"],
+    "featured": true
+  },
+  {
+    "name": "Merge Round Racers",
+    "image": "/img/games/merge-round-racers.png",
+    "url": "https://23azostore.github.io/s7/merge-round-racers/",
+    "categories": ["Racing", "Casual"],
+    "featured": true
+  },
+  {
+    "name": "Stock Car Hero",
+    "image": "/img/games/stock-car-hero.png",
+    "url": "https://23azostore.github.io/s3/stock-car-hero/",
+    "categories": ["Racing"],
+    "featured": true
+  },
+  {
+    "name": "Hextris",
+    "image": "/img/games/hextris.png",
+    "url": "https://lite.3kh0.net/projects/hextris/",
+    "categories": ["Puzzle"],
+    "featured": true
+  },
+  {
+    "name": "1v1.LOL",
+    "image": "/img/games/1v1-lol.png",
+    "url": "https://1v1-lol-online.bitbucket.io/1v1-lol-3/",
+    "categories": ["Action", "Multiplayer"],
+    "featured": true
+  },
+  {
+    "name": "Cluster Rush",
+    "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1988790/header.jpg",
+    "url": "https://23azostore.github.io/s8/cluster-rush/",
+    "categories": ["Action"],
+    "featured": true
   }
 ]
