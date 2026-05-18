@@ -352,14 +352,31 @@ import Background from "../components/background.astro";
     #main-title {
         font-size: clamp(3.5rem, 10vw, 6.5rem);
         font-family: bold;
-        background: linear-gradient(120deg, #38bdf8 0%, #60a5fa 35%, #818cf8 65%, #7dd3fc 100%);
+        background: linear-gradient(120deg, #38bdf8 0%, #60a5fa 20%, #818cf8 40%, #7dd3fc 60%, #38bdf8 80%, #60a5fa 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        background-size: 250% 100%;
         margin: 0 0 0.5rem 0;
         line-height: 1;
         letter-spacing: -0.02em;
         text-align: center;
+        animation: title-shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes title-shimmer {
+        0% {
+            background-position: 0% 50%;
+            filter: drop-shadow(0 0 10px rgba(56,189,248,0.35));
+        }
+        50% {
+            background-position: 100% 50%;
+            filter: drop-shadow(0 0 22px rgba(129,140,248,0.55));
+        }
+        100% {
+            background-position: 0% 50%;
+            filter: drop-shadow(0 0 10px rgba(56,189,248,0.35));
+        }
     }
 
     #changelog-btn {
