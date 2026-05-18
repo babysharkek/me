@@ -9,6 +9,28 @@ import Background from "../components/background.astro";
         <div id="home-center">
             <h1 id="main-title">Bolt proxy</h1>
 
+            <button id="changelog-btn" aria-label="What's new">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                What's New
+            </button>
+
+            <!-- Changelog Modal -->
+            <div id="changelog-modal" style="display:none">
+                <div id="changelog-modal-box">
+                    <div id="changelog-modal-header">
+                        <span id="changelog-modal-title">Changelog</span>
+                        <button id="changelog-close" aria-label="Close">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <iframe id="changelog-iframe" src="" title="Changelog" frameborder="0" loading="lazy"></iframe>
+                </div>
+            </div>
+
             <div id="search-wrap">
                 <form id="search-form" method="GET" action="javascript:void(0)">
                     <svg id="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -263,6 +285,35 @@ import Background from "../components/background.astro";
 
             loadDevices();
 
+            // Changelog modal
+            var changelogBtn = document.getElementById('changelog-btn');
+            var changelogModal = document.getElementById('changelog-modal');
+            var changelogClose = document.getElementById('changelog-close');
+            var changelogIframe = document.getElementById('changelog-iframe');
+            var changelogLoaded = false;
+
+            changelogBtn.addEventListener('click', function() {
+                if (!changelogLoaded) {
+                    changelogIframe.src = 'https://www.changelogdev.com/bolt';
+                    changelogLoaded = true;
+                }
+                changelogModal.style.display = 'flex';
+            });
+
+            changelogClose.addEventListener('click', function() {
+                changelogModal.style.display = 'none';
+            });
+
+            changelogModal.addEventListener('click', function(e) {
+                if (e.target === changelogModal) changelogModal.style.display = 'none';
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && changelogModal.style.display === 'flex') {
+                    changelogModal.style.display = 'none';
+                }
+            });
+
             // Panic key: backslash → redirect to safe page
             document.addEventListener('keydown', function(e) {
                 if (e.key === '\\' || e.key === 'Backslash') {
@@ -304,6 +355,100 @@ import Background from "../components/background.astro";
         line-height: 1;
         letter-spacing: -0.02em;
         text-align: center;
+    }
+
+    #changelog-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0.45rem 0 1.6rem;
+        padding: 6px 14px;
+        border-radius: 100px;
+        background: rgba(139,92,246,0.12);
+        border: 1px solid rgba(139,92,246,0.22);
+        color: rgba(167,139,250,0.9);
+        font-family: medium;
+        font-size: 0.78rem;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    #changelog-btn:hover {
+        background: rgba(139,92,246,0.2);
+        border-color: rgba(139,92,246,0.38);
+        color: rgba(196,181,253,1);
+        transform: translateY(-1px);
+    }
+
+    #changelog-btn:active { transform: scale(0.96); }
+
+    #changelog-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9998;
+        padding: 20px;
+    }
+
+    #changelog-modal-box {
+        background: #0e0e16;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 520px;
+        height: min(82vh, 700px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+    }
+
+    #changelog-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        flex-shrink: 0;
+    }
+
+    #changelog-modal-title {
+        font-family: bold;
+        font-size: 0.95rem;
+        color: #fff;
+        letter-spacing: 0.01em;
+    }
+
+    #changelog-close {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.55);
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    #changelog-close:hover {
+        background: rgba(255,255,255,0.12);
+        color: #fff;
+    }
+
+    #changelog-iframe {
+        flex: 1;
+        width: 100%;
+        border: none;
+        background: #0a0a0a;
+        border-radius: 0 0 20px 20px;
     }
 
     #tagline {
