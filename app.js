@@ -276,28 +276,6 @@ fastify.post("/api/kick-device", async (request, reply) => {
     return reply.send({ ok: true });
 });
 
-fastify.post("/api/chat", async (request, reply) => {
-    const apiKey = process.env.OPENROUTER_API_KEY;
-
-    if (!apiKey) {
-        return reply.status(500).send({ error: "API key not configured on server." });
-    }
-
-    const upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": request.headers["origin"] ?? "",
-            "X-Title": "Bolt AI",
-        },
-        body: JSON.stringify(request.body),
-    });
-
-    const data = await upstream.json();
-    return reply.status(upstream.status).send(data);
-});
-
 fastify.post("/api/deepreset", async (request, reply) => {
     const cookieNames = ["session", "auth-token", "refresh-token"];
 

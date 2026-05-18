@@ -12,11 +12,6 @@
         "frameId": "game-hub"
     },
     {
-        "name": "AI Chat",
-        "icon": "/img/icons/ai.webp",
-        "url": "/ai"
-    },
-    {
         "name": "App Store",
         "icon": "/img/icons/appstore.webp",
         "url": "/appstore"
